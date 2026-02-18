@@ -43,11 +43,13 @@ while [ $(find . -mindepth 1 -maxdepth 1 -type d -not -name conda-meta | wc -l) 
         echo "Found only a bin subdir, this looks good"
         break
     else
-        # move everything up a level
+        # move everything up a level, using a temp name to avoid
+        # conflicts when the directory contains a file with the same name
         SUBDIR=$(find . -mindepth 1 -maxdepth 1 -type d -not -name conda-meta)
-
-        mv "${SUBDIR}"/* . || true
-        rmdir "${SUBDIR}"
+        TMPNAME=".strip-$$"
+        mv "${SUBDIR}" "${TMPNAME}"
+        mv "${TMPNAME}"/* . || true
+        rmdir "${TMPNAME}"
     fi
 done
 
