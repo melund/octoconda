@@ -384,7 +384,7 @@ fn generate_rattler_build_recipe(
         .unwrap_or_default();
 
     let about = extract_about(package_version, repository, asset);
-    let pn = package_name.to_lowercase();
+    let pn = package_name;
 
     let archive = {
         let path = PathBuf::from(asset.browser_download_url.path());

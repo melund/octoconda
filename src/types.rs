@@ -7,6 +7,12 @@ pub struct Repository {
     pub repo: String,
 }
 
+impl std::fmt::Display for Repository {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}/{}", self.owner, self.repo)
+    }
+}
+
 impl TryFrom<&str> for Repository {
     type Error = anyhow::Error;
 

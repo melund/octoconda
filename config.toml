@@ -12,6 +12,7 @@ repository = "8051Enthusiast/biodiff"
 
 [[packages]]
 repository = "99designs/aws-vault"
+deprecated = true
 
 [[packages]]
 repository = "a-h/templ"
@@ -351,6 +352,7 @@ repository = "aws/aws-sam-cli"
 
 [[packages]]
 repository = "aws/copilot-cli"
+name = "aws_copilot_cli"
 
 [[packages]]
 repository = "awslabs/dynein"
@@ -399,6 +401,8 @@ repository = "Azure/draft"
 
 [[packages]]
 repository = "Azure/kubelogin"
+name = "azure_kubelogin"
+
 
 [[packages]]
 repository = "babarot/afx"
@@ -462,6 +466,7 @@ repository = "BeaconBay/ck"
 
 [[packages]]
 repository = "Bearer/gon"
+name = "bearer_gon"
 
 [[packages]]
 repository = "becheran/mlc"
@@ -474,6 +479,7 @@ repository = "benbjohnson/litestream"
 
 [[packages]]
 repository = "benchkram/bob"
+name = "benchkram_bob"
 
 [[packages]]
 repository = "bengadbois/pewpew"
@@ -528,6 +534,7 @@ repository = "blacknon/hwatch"
 
 [[packages]]
 repository = "block/goose"
+name = "block_goose"
 
 [[packages]]
 repository = "blopker/codebook"
@@ -589,6 +596,7 @@ repository = "brigadecore/brigade"
 
 [[packages]]
 repository = "bronze1man/yaml2json"
+name = "bronze1man_yaml2json"
 
 [[packages]]
 repository = "brumhard/krewfile"
@@ -607,9 +615,12 @@ repository = "Builditluc/wiki-tui"
 
 [[packages]]
 repository = "buildkite/agent"
+name = "buildkite_agent"
 
 [[packages]]
 repository = "buildkite/cli"
+name = "buildkite_cli"
+
 
 [[packages]]
 repository = "buildpacks/pack"
@@ -826,6 +837,7 @@ repository = "citrusframework/yaks"
 
 [[packages]]
 repository = "civo/cli"
+name = "cive_cli"
 
 [[packages]]
 repository = "ck-zhang/reddix"
@@ -838,6 +850,7 @@ repository = "ClementTsang/bottom"
 
 [[packages]]
 repository = "cli/cli"
+name = "gh"
 
 [[packages]]
 repository = "climech/grit"
@@ -997,9 +1010,7 @@ repository = "context-labs/mactop"
 
 [[packages]]
 repository = "controlplaneio/kubectl-kubesec"
-
-[[packages]]
-repository = "controlplaneio/kubesec"
+name = "controlplaneio_kubectl_kubesec"
 
 [[packages]]
 repository = "coreos/butane"
@@ -1042,6 +1053,7 @@ repository = "crazywhalecc/static-php-cli"
 
 [[packages]]
 repository = "create-go-app/cli"
+name = "create_go_app"
 
 [[packages]]
 repository = "CrociDB/bulletty"
@@ -1123,6 +1135,7 @@ repository = "danvergara/dblab"
 
 [[packages]]
 repository = "dapr/cli"
+name = "dapr_cli"
 
 [[packages]]
 repository = "Darth-Tech/samwise-cli"
@@ -1183,6 +1196,7 @@ repository = "denoland/deno"
 
 [[packages]]
 repository = "dependabot/cli"
+name = "dependabot_cli"
 
 [[packages]]
 repository = "derailed/k9s"
@@ -1369,6 +1383,7 @@ repository = "eficode/wait-for"
 
 [[packages]]
 repository = "ekristen/aws-nuke"
+name = "ekristen_aws_nuke"
 
 [[packages]]
 repository = "eksctl-io/eksctl"
@@ -1441,9 +1456,11 @@ repository = "evilmartians/lefthook"
 
 [[packages]]
 repository = "exercism/cli"
+name = "exercism_cli"
 
 [[packages]]
 repository = "exoscale/cli"
+name = "exoscale_cli"
 
 [[packages]]
 repository = "external-secrets/external-secrets"
@@ -1483,6 +1500,7 @@ repository = "fastfetch-cli/fastfetch"
 
 [[packages]]
 repository = "fastly/cli"
+name = "fastly_cli"
 
 [[packages]]
 repository = "fastly/terrctl"
@@ -1663,6 +1681,7 @@ repository = "gcla/termshark"
 
 [[packages]]
 repository = "gdubicki/ets"
+name = "gdubicki_ets"
 
 [[packages]]
 repository = "gefyrahq/gefyra"
@@ -1693,6 +1712,7 @@ repository = "getgauge/gauge"
 
 [[packages]]
 repository = "getporter/porter"
+name = "getporter_porter"
 
 [[packages]]
 repository = "getsavvyinc/savvy-cli"
@@ -1711,6 +1731,7 @@ repository = "GhostTroops/scan4all"
 
 [[packages]]
 repository = "ginuerzh/gost"
+name = "ginuerzh_gost"
 
 [[packages]]
 repository = "git-bug/git-bug"
@@ -1732,6 +1753,7 @@ repository = "github-release/github-release"
 
 [[packages]]
 repository = "github/copilot-cli"
+name = "github_copilot_cli"
 
 [[packages]]
 repository = "github/copilot-language-server-release"
@@ -1771,6 +1793,7 @@ repository = "go-acme/lego"
 
 [[packages]]
 repository = "go-gost/gost"
+name = "go_gost_gost"
 
 [[packages]]
 repository = "go-jira/jira"
@@ -1921,6 +1944,7 @@ repository = "gotestyourself/gotestsum"
 
 [[packages]]
 repository = "gotify/cli"
+name = "gotify_cli"
 
 [[packages]]
 repository = "gptscript-ai/gptscript"
@@ -2071,6 +2095,7 @@ repository = "helmwave/helmwave"
 
 [[packages]]
 repository = "hetznercloud/cli"
+name = "hetznercloud_cli"
 
 [[packages]]
 repository = "hexdigest/gowrap"
@@ -2083,6 +2108,7 @@ repository = "hherman1/gq"
 
 [[packages]]
 repository = "hidetatz/kubecolor"
+deprecated = true
 
 [[packages]]
 repository = "high-moctane/mocword"
@@ -2206,6 +2232,7 @@ repository = "int128/cronjob-runner"
 
 [[packages]]
 repository = "int128/ghcp"
+name = "int128_ghcp"
 
 [[packages]]
 repository = "int128/kauthproxy"
@@ -2215,6 +2242,7 @@ repository = "int128/kubectl-external-forward"
 
 [[packages]]
 repository = "int128/kubelogin"
+name = "int128_kubelogin"
 
 [[packages]]
 repository = "int128/yamlpatch"
@@ -2233,6 +2261,7 @@ repository = "ipfs/kubo"
 
 [[packages]]
 repository = "ipinfo/cli"
+name = "ipinfo_cli"
 
 [[packages]]
 repository = "ipld/go-car"
@@ -2500,6 +2529,8 @@ repository = "k1LoW/cuestr"
 
 [[packages]]
 repository = "k1LoW/deck"
+name = "k1low_deck"
+
 
 [[packages]]
 repository = "k1LoW/gh-do"
@@ -2599,6 +2630,7 @@ repository = "kaytu-io/kaytu"
 
 [[packages]]
 repository = "kcl-lang/cli"
+name = "kcl_lang_cli"
 
 [[packages]]
 repository = "kcl-lang/kcl"
@@ -2713,6 +2745,7 @@ repository = "koluku/s3s"
 
 [[packages]]
 repository = "Kong/deck"
+name = "kong_deck"
 
 [[packages]]
 repository = "konradsz/igrep"
@@ -2836,6 +2869,7 @@ repository = "kubevela/kubevela"
 
 [[packages]]
 repository = "kubevious/cli"
+name = "kubevious_cli"
 
 [[packages]]
 repository = "kubevirt/kubevirt"
@@ -2863,6 +2897,7 @@ repository = "kvz/json2hcl"
 
 [[packages]]
 repository = "kyma-project/cli"
+name = "kyma_project_cli"
 
 [[packages]]
 repository = "kyoh86/richgo"
@@ -3175,6 +3210,8 @@ repository = "Melkeydev/go-blueprint"
 
 [[packages]]
 repository = "mercari/hcledit"
+name = "mercari_hcledit"
+
 
 [[packages]]
 repository = "mercari/tfnotify"
@@ -3241,6 +3278,7 @@ repository = "miku/zek"
 
 [[packages]]
 repository = "minamijoyo/hcledit"
+name = "minamijoyo_hcledit"
 
 [[packages]]
 repository = "minamijoyo/myaws"
@@ -3271,6 +3309,7 @@ repository = "mintoolkit/mint"
 
 [[packages]]
 repository = "MiSawa/xq"
+name = "misawa_xq"
 
 [[packages]]
 repository = "mislav/hub"
@@ -3283,6 +3322,7 @@ repository = "mitchellh/golicense"
 
 [[packages]]
 repository = "mitchellh/gon"
+name = "mitchellh_gon"
 
 [[packages]]
 repository = "mitoma/sver"
@@ -3331,6 +3371,7 @@ repository = "moonrepo/proto"
 
 [[packages]]
 repository = "MordechaiHadad/bob"
+name = "mordechaihadad_bob"
 
 [[packages]]
 repository = "mozilla/cargo-vet"
@@ -3649,6 +3690,7 @@ repository = "openfaas/faas-cli"
 
 [[packages]]
 repository = "openfga/cli"
+name = "openfga_cli"
 
 [[packages]]
 repository = "opengrep/opengrep"
@@ -3861,6 +3903,7 @@ repository = "pkolaczk/fclones"
 
 [[packages]]
 repository = "planetscale/cli"
+name= "planetscale_cli"
 
 [[packages]]
 repository = "plexsystems/sinker"
@@ -3888,6 +3931,7 @@ repository = "ponkio-o/ec2x"
 
 [[packages]]
 repository = "porter-dev/porter"
+deprecated = true
 
 [[packages]]
 repository = "PowerShell/PowerShell"
@@ -3906,6 +3950,7 @@ repository = "pre-commit/pre-commit"
 
 [[packages]]
 repository = "pressly/goose"
+name = "pressly_goose"
 
 [[packages]]
 repository = "printfn/fend"
@@ -4033,6 +4078,7 @@ repository = "rajatjindal/kubectl-whoami"
 
 [[packages]]
 repository = "rancher/cli"
+name = "rancher_cli"
 
 [[packages]]
 repository = "rancher/kim"
@@ -4057,6 +4103,7 @@ repository = "realm/SwiftLint"
 
 [[packages]]
 repository = "rebuy-de/aws-nuke"
+name = "rebuy_de_aws-nuke"
 
 [[packages]]
 repository = "redpanda-data/connect"
@@ -4252,6 +4299,7 @@ repository = "sanathp/statusok"
 
 [[packages]]
 repository = "santhosh-tekuri/jsonschema"
+name = "santhosh_tekuri_jsonschema"
 
 [[packages]]
 repository = "sarub0b0/kubetui"
@@ -4282,6 +4330,7 @@ repository = "scaleway/scaleway-cli"
 
 [[packages]]
 repository = "Scalingo/cli"
+name = "scalingo_cli"
 
 [[packages]]
 repository = "scenarigo/scenarigo"
@@ -4315,6 +4364,7 @@ repository = "segmentio/chamber"
 
 [[packages]]
 repository = "segmentio/golines"
+name = "segmentio_golines"
 
 [[packages]]
 repository = "self-actuated/actuated-cli"
@@ -4399,9 +4449,11 @@ repository = "showwin/speedtest-go"
 
 [[packages]]
 repository = "shyiko/kubesec"
+name = "shyiko_kubesec"
 
 [[packages]]
 repository = "sibprogrammer/xq"
+name = "sibprogrammer_xq"
 
 [[packages]]
 repository = "siderolabs/conform"
@@ -4432,6 +4484,7 @@ repository = "sigstore/rekor"
 
 [[packages]]
 repository = "siketyan/ghr"
+name = "siketyan_ghr"
 
 [[packages]]
 repository = "simeji/jid"
@@ -4510,6 +4563,7 @@ repository = "smallstep/certificates"
 
 [[packages]]
 repository = "smallstep/cli"
+name = "smallstep_cli"
 
 [[packages]]
 repository = "smartxworks/knest"
@@ -4522,6 +4576,7 @@ repository = "smtg-ai/claude-squad"
 
 [[packages]]
 repository = "snyk/cli"
+name = "snyk_cli"
 
 [[packages]]
 repository = "snyk/driftctl"
@@ -4606,6 +4661,7 @@ repository = "sorah/mairu"
 
 [[packages]]
 repository = "sorenisanerd/gotty"
+name = "sorenisanerd_gotty"
 
 [[packages]]
 repository = "sourcefrog/cargo-mutants"
@@ -4615,6 +4671,7 @@ repository = "sourcegraph/src-cli"
 
 [[packages]]
 repository = "sourcemeta/jsonschema"
+name = "sourcemeta_jsonschema"
 
 [[packages]]
 repository = "spacelift-io/spacectl"
@@ -4693,6 +4750,7 @@ repository = "str4d/rage"
 
 [[packages]]
 repository = "Stranger6667/jsonschema"
+name = "stranger6667_jsonschema"
 
 [[packages]]
 repository = "streamdal/plumber"
@@ -4720,6 +4778,7 @@ repository = "sunny0826/kubectl-pod-lens"
 
 [[packages]]
 repository = "supabase/cli"
+name = "supabase_cli"
 
 [[packages]]
 repository = "superbrothers/ksort"
@@ -4774,6 +4833,7 @@ repository = "suzuki-shunsuke/ghatm"
 
 [[packages]]
 repository = "suzuki-shunsuke/ghcp"
+name = "suzuki_shunsuke_ghcp"
 
 [[packages]]
 repository = "suzuki-shunsuke/ghd2i"
@@ -4837,6 +4897,7 @@ repository = "suzuki-shunsuke/tfrstate"
 
 [[packages]]
 repository = "suzuki-shunsuke/yaml2json"
+name = "suzuki_shunsuke_yaml2json"
 
 [[packages]]
 repository = "suzuki-shunsuke/yodoc"
@@ -4924,6 +4985,7 @@ repository = "tauri-apps/tauri"
 
 [[packages]]
 repository = "tcnksm/ghr"
+name = "tcnksm_ghr"
 
 [[packages]]
 repository = "tdejager/cargo-patch-source"
@@ -4939,6 +5001,7 @@ repository = "technicalpickles/envsense"
 
 [[packages]]
 repository = "tektoncd/cli"
+name = "tektoncd_cli"
 
 [[packages]]
 repository = "TekWizely/run"
@@ -4957,6 +5020,7 @@ repository = "tellerops/teller"
 
 [[packages]]
 repository = "temporalio/cli"
+name = "temporalio_cli"
 
 [[packages]]
 repository = "temporalio/tctl"
@@ -4990,6 +5054,7 @@ repository = "terratags/terratags"
 
 [[packages]]
 repository = "tfmigrator/cli"
+name = "tfmigrator_cli"
 
 [[packages]]
 repository = "thanos-io/thanos"
@@ -5094,10 +5159,6 @@ repository = "traviswt/gke-auth-plugin"
 repository = "tree-sitter/tree-sitter"
 
 [[packages]]
-repository = "tree-sitter/tree-sitter"
-name = "tree-sitter"
-
-[[packages]]
 repository = "Trendyol/kink"
 
 [[packages]]
@@ -5153,6 +5214,7 @@ repository = "typstyle-rs/typstyle"
 
 [[packages]]
 repository = "ubicloud/cli"
+name = "ubicloud_cli"
 
 [[packages]]
 repository = "umlx5h/gtrash"
@@ -5432,6 +5494,7 @@ repository = "ytdl-org/ytdl-nightly"
 
 [[packages]]
 repository = "yudai/gotty"
+name = "yudai_gotty"
 
 [[packages]]
 repository = "yujqiao/catproc"
@@ -5483,6 +5546,7 @@ repository = "zmap/zlint"
 
 [[packages]]
 repository = "zmwangx/ets"
+name = "zmwangx_ets"
 
 [[packages]]
 repository = "zquestz/s"

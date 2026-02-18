@@ -13,6 +13,13 @@ use serde::Deserialize;
 
 use crate::types::Repository;
 
+/// Derive the conda package name from the config: use the explicit name if
+/// provided, otherwise fall back to the repository name. The result is
+/// lowercased because conda package names are case-insensitive.
+pub fn conda_package_name(name: Option<&str>, repo: &str) -> String {
+    name.unwrap_or(repo).to_lowercase()
+}
+
 #[derive(Deserialize)]
 #[serde(untagged)]
 pub enum StringOrList {
@@ -25,6 +32,8 @@ pub struct TomlPackage {
     pub name: Option<String>,
     pub repository: String,
     pub platforms: Option<HashMap<Platform, StringOrList>>,
+    #[serde(default)]
+    pub deprecated: bool,
 }
 
 #[derive(Clone, Debug)]
@@ -124,10 +133,7 @@ impl TryFrom<TomlPackage> for Package {
 
     fn try_from(value: TomlPackage) -> Result<Self, Self::Error> {
         let repository = Repository::try_from(value.repository.as_str())?;
-        let name = value
-            .name
-            .clone()
-            .unwrap_or_else(|| repository.repo.clone());
+        let name = conda_package_name(value.name.as_deref(), &repository.repo);
 
         let n = &value.name;
 
@@ -231,12 +237,41 @@ impl TryFrom<TomlConfig> for Config {
     type Error = anyhow::Error;
 
     fn try_from(mut value: TomlConfig) -> Result<Self, Self::Error> {
+        // Check for duplicate package names across ALL entries (including deprecated).
+        {
+            let mut seen: HashMap<String, (&str, bool)> = HashMap::new();
+            for tp in &value.packages {
+                let repo = Repository::try_from(tp.repository.as_str())?;
+                let name = conda_package_name(tp.name.as_deref(), &repo.repo);
+                if let Some((prev_repo, prev_deprecated)) = seen.get(&name) {
+                    if tp.deprecated || *prev_deprecated {
+                        eprintln!(
+                            "Note: Duplicate package name \"{name}\": \
+                             produced by both \"{prev_repo}\" and \"{}\"\
+                             (at least one is deprecated)",
+                            tp.repository,
+                        );
+                    } else {
+                        anyhow::bail!(
+                            "Duplicate package name \"{name}\": \
+                             produced by both \"{prev_repo}\" and \"{}\"",
+                            tp.repository,
+                        );
+                    }
+                }
+                seen.insert(name, (&tp.repository, tp.deprecated));
+            }
+        }
+
+        let packages: Vec<Package> = value
+            .packages
+            .drain(..)
+            .filter(|tp| !tp.deprecated)
+            .map(|tp| tp.try_into())
+            .collect::<anyhow::Result<Vec<_>>>()?;
+
         Ok(Config {
-            packages: value
-                .packages
-                .drain(..)
-                .map(|tp| tp.try_into())
-                .collect::<anyhow::Result<Vec<_>>>()?,
+            packages,
             conda: value.conda,
         })
     }
@@ -280,8 +315,147 @@ pub mod tests {
             name: None,
             repository: "foo/bar".to_string(),
             platforms: None,
+            deprecated: false,
         };
         let package: super::Package = toml.try_into().unwrap();
         package.platforms
+    }
+
+    fn toml_config(packages: Vec<TomlPackage>) -> TomlConfig {
+        TomlConfig {
+            packages,
+            conda: Conda {
+                channel: "test-channel".to_string(),
+            },
+        }
+    }
+
+    #[test]
+    fn test_duplicate_package_names_rejected() {
+        let config = toml_config(vec![
+            TomlPackage {
+                name: None,
+                repository: "alice/foo".to_string(),
+                platforms: None,
+                deprecated: false,
+            },
+            TomlPackage {
+                name: None,
+                repository: "bob/foo".to_string(),
+                platforms: None,
+                deprecated: false,
+            },
+        ]);
+        let err = Config::try_from(config).unwrap_err();
+        assert!(
+            err.to_string().contains("Duplicate package name"),
+            "unexpected error: {err}"
+        );
+    }
+
+    #[test]
+    fn test_duplicate_package_names_case_insensitive() {
+        let config = toml_config(vec![
+            TomlPackage {
+                name: Some("Foo".to_string()),
+                repository: "alice/something".to_string(),
+                platforms: None,
+                deprecated: false,
+            },
+            TomlPackage {
+                name: Some("foo".to_string()),
+                repository: "bob/other".to_string(),
+                platforms: None,
+                deprecated: false,
+            },
+        ]);
+        let err = Config::try_from(config).unwrap_err();
+        assert!(
+            err.to_string().contains("Duplicate package name"),
+            "unexpected error: {err}"
+        );
+    }
+
+    #[test]
+    fn test_explicit_name_conflicts_with_repo_name() {
+        let config = toml_config(vec![
+            TomlPackage {
+                name: None,
+                repository: "alice/foo".to_string(),
+                platforms: None,
+                deprecated: false,
+            },
+            TomlPackage {
+                name: Some("foo".to_string()),
+                repository: "bob/bar".to_string(),
+                platforms: None,
+                deprecated: false,
+            },
+        ]);
+        let err = Config::try_from(config).unwrap_err();
+        assert!(
+            err.to_string().contains("Duplicate package name"),
+            "unexpected error: {err}"
+        );
+    }
+
+    #[test]
+    fn test_unique_package_names_accepted() {
+        let config = toml_config(vec![
+            TomlPackage {
+                name: None,
+                repository: "alice/foo".to_string(),
+                platforms: None,
+                deprecated: false,
+            },
+            TomlPackage {
+                name: None,
+                repository: "bob/bar".to_string(),
+                platforms: None,
+                deprecated: false,
+            },
+        ]);
+        Config::try_from(config).unwrap();
+    }
+
+    #[test]
+    fn test_duplicate_with_deprecated_is_not_an_error() {
+        let config = toml_config(vec![
+            TomlPackage {
+                name: None,
+                repository: "alice/foo".to_string(),
+                platforms: None,
+                deprecated: true,
+            },
+            TomlPackage {
+                name: None,
+                repository: "bob/foo".to_string(),
+                platforms: None,
+                deprecated: false,
+            },
+        ]);
+        let cfg = Config::try_from(config).unwrap();
+        assert_eq!(cfg.packages.len(), 1);
+        assert_eq!(cfg.packages[0].repository.owner, "bob");
+    }
+
+    #[test]
+    fn test_duplicate_both_deprecated_is_not_an_error() {
+        let config = toml_config(vec![
+            TomlPackage {
+                name: None,
+                repository: "alice/foo".to_string(),
+                platforms: None,
+                deprecated: true,
+            },
+            TomlPackage {
+                name: None,
+                repository: "bob/foo".to_string(),
+                platforms: None,
+                deprecated: true,
+            },
+        ]);
+        let cfg = Config::try_from(config).unwrap();
+        assert!(cfg.packages.is_empty());
     }
 }
