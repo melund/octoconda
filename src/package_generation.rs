@@ -440,34 +440,7 @@ fn generate_rattler_build_recipe(
     let about = extract_about(package_version, repository, asset);
     let pn = package_name;
 
-    let archive = {
-        let path = PathBuf::from(asset.browser_download_url.path());
-        let file_name = path
-            .file_name()
-            .unwrap_or_default()
-            .to_str()
-            .unwrap_or_default();
-        let full_ext = if file_name.ends_with(".zip") {
-            ".zip"
-        } else if let Some(pos) = file_name.find(".tar.") {
-            &file_name[pos..]
-        } else if file_name.ends_with(".tgz") {
-            ".tar.gz"
-        } else if file_name.ends_with(".txz") {
-            ".tar.xz"
-        } else if file_name.ends_with(".gz") {
-            ".gz"
-        } else if file_name.ends_with(".xz") {
-            ".xz"
-        } else if file_name.ends_with(".zst") {
-            ".zst"
-        } else if file_name.ends_with(".exe") {
-            ".exe"
-        } else {
-            ""
-        };
-        format!("{pn}-{package_version}-{target_platform}{full_ext}")
-    };
+    let archive = format!("{pn}-{package_version}-{target_platform}");
 
     let url = yaml_escape(&url);
     let package_version = yaml_escape(package_version);

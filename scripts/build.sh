@@ -5,35 +5,70 @@ set -x
 WORK_DIR="${PWD}"
 
 SRC="${PKG_NAME}-${PKG_VERSION}-${target_platform}"
+SRC_FILE="${WORK_DIR}/${SRC}"
 
-if test -f "${SRC}.zip"; then
-    ( cd "$PREFIX" && unzip -n "${WORK_DIR}/${SRC}.zip" )
-    # Delete extra stuff Macs apparently stuffed into zip files:
-    rm -rf "$PREFIX/__MACOSX" || true
-elif test -f "${SRC}.tar.gz"; then
-    ( cd "$PREFIX" && tar -xzf "${WORK_DIR}/${SRC}.tar.gz" )
-elif test -f "${SRC}.tar.xz"; then
-    ( cd "$PREFIX" && tar -xJf "${WORK_DIR}/${SRC}.tar.xz" )
-elif test -f "${SRC}.gz"; then
-    ( cd "$PREFIX" && cat "${WORK_DIR}/${SRC}.gz" | gunzip > "${PREFIX}/${PKG_NAME}" )
-    chmod 755 "${PREFIX}/${PKG_NAME}"
-elif test -f "${SRC}.xz"; then
-    ( cd "$PREFIX" && cat "${WORK_DIR}/${SRC}.xz" | unxz > "${PREFIX}/${PKG_NAME}" )
-    chmod 755 "${PREFIX}/${PKG_NAME}"
-elif test -f "${SRC}.zst"; then
-    ( cd "$PREFIX" && cat "${WORK_DIR}/${SRC}.zst" | unzstd > "${PREFIX}/${PKG_NAME}" )
-    chmod 755 "${PREFIX}/${PKG_NAME}"
-elif test -f "${WORK_DIR}/${SRC}.exe"; then
-    mkdir "${PREFIX}/bin"
-    cp "${WORK_DIR}/${SRC}.exe" "${PREFIX}/bin/${PKG_NAME}.exe"
-    chmod 755 "${PREFIX}/bin/${PKG_NAME}.exe"
-elif test -f "${WORK_DIR}/${SRC}"; then
-    cp "${WORK_DIR}/${SRC}" "${PREFIX}/${PKG_NAME}"
-    chmod 755 "${PREFIX}/${PKG_NAME}"
-else
-    echo "${SRC} not found, not a file, not a zip, not an exe, not a tarball, not compressed"
+if ! test -f "$SRC_FILE"; then
+    echo "${SRC} not found"
     echo "Work directory contents is:"
     ls -alF "${WORK_DIR}"
+    exit 1
+fi
+
+# Iteratively decompress and extract using file(1) to detect type.
+# This handles multi-layer formats (e.g. gzip-compressed tar) by looping:
+# each iteration peels off one layer of compression until we reach an
+# archive or bare binary.
+MAX_STEPS=5
+STEP=0
+while [ "$STEP" -lt "$MAX_STEPS" ]; do
+    STEP=$((STEP + 1))
+    FILE_TYPE=$(file -b "$SRC_FILE")
+    echo "Step ${STEP}: ${FILE_TYPE}"
+    case "$FILE_TYPE" in
+        *Zip\ archive* | *zip\ archive*)
+            ( cd "$PREFIX" && unzip -n "$SRC_FILE" )
+            # Delete extra stuff Macs apparently stuffed into zip files:
+            rm -rf "$PREFIX/__MACOSX" || true
+            break
+            ;;
+        *tar\ archive*)
+            ( cd "$PREFIX" && tar -xf "$SRC_FILE" )
+            break
+            ;;
+        *gzip\ compressed*)
+            gzip -dc < "$SRC_FILE" > "${SRC_FILE}.tmp"
+            mv "${SRC_FILE}.tmp" "$SRC_FILE"
+            ;;
+        *XZ\ compressed*)
+            xz -dc < "$SRC_FILE" > "${SRC_FILE}.tmp"
+            mv "${SRC_FILE}.tmp" "$SRC_FILE"
+            ;;
+        *Zstandard\ compressed* | *zstd\ compressed*)
+            zstd -dc < "$SRC_FILE" > "${SRC_FILE}.tmp"
+            mv "${SRC_FILE}.tmp" "$SRC_FILE"
+            ;;
+        *bzip2\ compressed*)
+            bzip2 -dc < "$SRC_FILE" > "${SRC_FILE}.tmp"
+            mv "${SRC_FILE}.tmp" "$SRC_FILE"
+            ;;
+        *PE32* | *PE32+*)
+            mkdir -p "${PREFIX}/bin"
+            cp "$SRC_FILE" "${PREFIX}/bin/${PKG_NAME}.exe"
+            chmod 755 "${PREFIX}/bin/${PKG_NAME}.exe"
+            break
+            ;;
+        *)
+            # Bare binary or unknown — copy as executable
+            cp "$SRC_FILE" "${PREFIX}/${PKG_NAME}"
+            chmod 755 "${PREFIX}/${PKG_NAME}"
+            break
+            ;;
+    esac
+done
+
+if [ "$STEP" -ge "$MAX_STEPS" ]; then
+    echo "Failed to fully extract ${SRC} after ${MAX_STEPS} decompression steps"
+    echo "Last file type: $(file -b "$SRC_FILE")"
     exit 1
 fi
 
