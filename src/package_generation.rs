@@ -310,8 +310,22 @@ fn extract_about(
         let license = if let Some(license) = &repository.license {
             // Fix outdated licenses
             let license_info = match license.spdx_id.as_str() {
+                "GPL-1.0" => "GPL-1.0-only",
+                "GPL-1.0+" => "GPL-1.0-or-later",
+                "GPL-2.0" => "GPL-2.0-only",
+                "GPL-2.0+" => "GPL-2.0-or-later",
                 "GPL-3.0" => "GPL-3.0-only",
+                "GPL-3.0+" => "GPL-3.0-or-later",
+                "AGPL-1.0" => "AGPL-1.0-only",
+                "AGPL-1.0+" => "AGPL-1.0-or-later",
                 "AGPL-3.0" => "AGPL-3.0-only",
+                "AGPL-3.0+" => "AGPL-3.0-or-later",
+                "LGPL-2.0" => "LGPL-2.0-only",
+                "LGPL-2.0+" => "LGPL-2.0-or-later",
+                "LGPL-2.1" => "LGPL-2.1-only",
+                "LGPL-2.1+" => "LGPL-2.1-or-later",
+                "LGPL-3.0" => "LGPL-3.0-only",
+                "LGPL-3.0+" => "LGPL-3.0-or-later",
                 l => l,
             };
             format!("\n  license: \"{}\"", license_info)
