@@ -32,7 +32,7 @@ for platform in "${CURRENT}/"*/; do
       package=$(basename "${PACKAGE_DIR}")
       # Check if it's actually a directory
       if test -d "$PACKAGE_DIR"; then
-        echo "******* ${package} (${count}/${RECIPE_COUNT}, ${FAILED_PACKAGES} failed) ******"
+        echo "******* ${package} (${count}/${RECIPE_COUNT}, ${FAILED_PACKAGES} not OK) ******"
         if test -f "${PACKAGE_DIR}/recipe.yaml"; then
           if ( cd "${PACKAGE_DIR}" \
               && rattler-build publish \
@@ -48,6 +48,9 @@ for platform in "${CURRENT}/"*/; do
         else
           echo "        NO RECIPE FOUND, SKIPPING"
         fi
+
+        # Clean up! We do not want to run out of storage
+        rm -rf "${PACKAGE_DIR}" || true
       fi
     done
   fi

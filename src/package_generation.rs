@@ -128,9 +128,9 @@ pub fn report_results(status: &HashMap<String, Vec<VersionPackagingStatus>>) -> 
                 (&Status::Failed, _) => Status::Failed,
                 (&Status::Succeeded, Status::Failed) => Status::Failed,
                 (&Status::Succeeded, Status::Succeeded) => Status::Succeeded,
-                (&Status::Succeeded, Status::Skipped) => Status::Succeeded,
+                (&Status::Succeeded, Status::Skipped) => Status::Skipped,
                 (&Status::Skipped, Status::Failed) => Status::Failed,
-                (&Status::Skipped, Status::Succeeded) => Status::Succeeded,
+                (&Status::Skipped, Status::Succeeded) => Status::Skipped,
                 (&Status::Skipped, Status::Skipped) => Status::Skipped,
             },
         );
@@ -138,42 +138,43 @@ pub fn report_results(status: &HashMap<String, Vec<VersionPackagingStatus>>) -> 
         result.push_str(&format!(
             "{package_status}: {} ({} packages)\n",
             package,
-            sub_status.len()
+            sub_status.len(),
         ));
 
-        for vs in sub_status {
-            let mut version = vs.version.clone().unwrap_or_default();
+        if package_status != Status::Succeeded {
+            for vs in sub_status {
+                let mut version = vs.version.clone().unwrap_or_default();
 
-            let skipped = {
-                let skipped = vs
-                    .status
-                    .iter()
-                    .filter_map(|s| (s.status == Status::Skipped).then_some(s.platform))
-                    .fold(String::new(), |acc, p| {
-                        if acc.is_empty() {
-                            format!("{p}")
-                        } else {
-                            format!("{acc}, {p}")
-                        }
-                    });
-                if skipped.is_empty() {
-                    skipped
-                } else {
-                    format!(" skipped: {skipped}")
+                let skipped = {
+                    let skipped = vs
+                        .status
+                        .iter()
+                        .filter_map(|s| (s.status == Status::Skipped).then_some(s.platform))
+                        .fold(String::new(), |acc, p| {
+                            if acc.is_empty() {
+                                format!("{p}")
+                            } else {
+                                format!("{acc}, {p}")
+                            }
+                        });
+                    if skipped.is_empty() {
+                        skipped
+                    } else {
+                        format!(" skipped: {skipped}")
+                    }
+                };
+
+                result.push_str(&format!("    {version}{skipped}\n"));
+
+                for s in &vs.status {
+                    if s.status == Status::Failed {
+                        result.push_str(&format!(
+                            "        {}: {} {}\n",
+                            s.status, s.platform, s.message
+                        ));
+                        version = version.chars().map(|_| ' ').collect()
+                    }
                 }
-            };
-
-            result.push_str(&format!("    {version}{skipped}\n"));
-
-            for s in &vs.status {
-                if s.status == Status::Skipped {
-                    continue;
-                }
-                result.push_str(&format!(
-                    "        {}: {} {}\n",
-                    s.status, s.platform, s.message
-                ));
-                version = version.chars().map(|_| ' ').collect()
             }
         }
     }

@@ -69,8 +69,7 @@ fn main() -> Result<(), anyhow::Error> {
 
             for package in config.packages.iter().filter(|p| {
                 cli.filter.as_ref().is_none_or(|re| {
-                    let full_name =
-                        format!("{}/{}", p.repository.owner, p.repository.repo);
+                    let full_name = format!("{}/{}", p.repository.owner, p.repository.repo);
                     re.is_match(&full_name)
                 })
             }) {
