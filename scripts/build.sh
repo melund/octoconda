@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -x
 
@@ -51,7 +51,7 @@ while [ "$STEP" -lt "$MAX_STEPS" ]; do
             bzip2 -dc < "$SRC_FILE" > "${SRC_FILE}.tmp"
             mv "${SRC_FILE}.tmp" "$SRC_FILE"
             ;;
-        *PE32* | *PE32+*)
+        *PE32+* | *PE32*)
             mkdir -p "${PREFIX}/bin"
             cp "$SRC_FILE" "${PREFIX}/bin/${PKG_NAME}.exe"
             chmod 755 "${PREFIX}/bin/${PKG_NAME}.exe"
@@ -77,7 +77,7 @@ pushd "$PREFIX" || exit 3
 shopt -s dotglob
 
 # Move everything out of a "foo-arch-version" folder
-while [ $(find . -mindepth 1 -maxdepth 1 -type d -not -name conda-meta | wc -l) -eq 1 ]; do
+while [ "$(find . -mindepth 1 -maxdepth 1 -type d -not -name conda-meta | wc -l)" -eq 1 ]; do
     if test -d "bin"; then
         echo "Found only a bin subdir, this looks good"
         break
@@ -109,6 +109,22 @@ for f in *; do
             *.exe|*.bat|*.com)
                 mv "${f}" bin
                 ;;
+            *.[1-9]|*.[1-9][a-z])
+                # Man page — compress and move to share/man/manN/
+                section="${f##*.}"
+                section="${section%[a-z]}"
+                mkdir -p "share/man/man${section}"
+                gzip -c "${f}" > "share/man/man${section}/${f}.gz"
+                rm "${f}"
+                ;;
+            *.[1-9].gz|*.[1-9][a-z].gz)
+                # Already-compressed man page — move to share/man/manN/
+                base="${f%.gz}"
+                section="${base##*.}"
+                section="${section%[a-z]}"
+                mkdir -p "share/man/man${section}"
+                mv "${f}" "share/man/man${section}/"
+                ;;
             *)
                 mv "${f}" extras
                 ;;
@@ -116,7 +132,19 @@ for f in *; do
         fi
     elif test -d "${f}"; then
         case "${f}" in
-        conda-meta|bin|etc|include|lib|man|share|ssl|extras)
+        usr)
+            # Move things out of /usr
+            TMPNAME=".strip-$$"
+            mv "usr" "${TMPNAME}"
+            mv "${TMPNAME}"/* . || true
+            rmdir "${TMPNAME}"
+            ;;
+        man)
+            # Move into share/
+            mkdir -p share
+            mv man share/
+            ;;
+        conda-meta|bin|etc|include|lib|share|ssl|extras)
             ;;
         *)
             mv "${f}" extras
