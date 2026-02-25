@@ -64,8 +64,8 @@ def format_timestamp(ts):
     return "unknown            "
 
 
-def delete_package(channel, platform, filename, api_key):
-    url = f"https://prefix.dev/api/v1/delete/{channel}/{platform}/{filename}"
+def delete_package(server, channel, platform, filename, api_key):
+    url = f"{server}/api/v1/delete/{channel}/{platform}/{filename}"
     req = urllib.request.Request(url, method="DELETE", headers={
         "User-Agent": "octoconda/1.0",
         "Authorization": f"Bearer {api_key}",
@@ -77,6 +77,8 @@ def delete_package(channel, platform, filename, api_key):
 def main():
     parser = argparse.ArgumentParser(description="List or delete packages in a prefix.dev channel")
     parser.add_argument("config", nargs="?", default="config.toml", help="Path to config.toml (default: ./config.toml)")
+    parser.add_argument("--server", default="https://prefix.dev", metavar="URL",
+                        help="Server URL (default: https://prefix.dev)")
     parser.add_argument("--delete-oldest", type=int, metavar="N",
                         help="Delete the N oldest packages")
     parser.add_argument("--delete-name", metavar="NAME",
@@ -90,7 +92,8 @@ def main():
         parser.error("--delete-oldest, --delete-name, and --delete-file are mutually exclusive")
 
     channel = load_channel(args.config)
-    channel_url = f"https://prefix.dev/{channel}"
+    server = args.server.rstrip("/")
+    channel_url = f"{server}/{channel}"
     print(f"Channel: {channel_url}", file=sys.stderr)
 
     if args.delete_file is not None:
@@ -108,7 +111,7 @@ def main():
         for i, pkg in enumerate(to_delete, 1):
             print(f"  [{i}/{total}] {pkg['platform']}/{pkg['filename']} ... ", end="", file=sys.stderr)
             try:
-                delete_package(channel, pkg["platform"], pkg["filename"], api_key)
+                delete_package(server, channel, pkg["platform"], pkg["filename"], api_key)
                 print("deleted", file=sys.stderr)
             except urllib.error.HTTPError as e:
                 print(f"failed: {e.code} {e.reason}", file=sys.stderr)
@@ -157,7 +160,7 @@ def main():
         date_str = format_timestamp(pkg["timestamp"])
         print(f"  [{i}/{total}] {date_str}  {pkg['platform']:20s}  {pkg['platform']}/{pkg['filename']} ... ", end="", file=sys.stderr)
         try:
-            delete_package(channel, pkg["platform"], pkg["filename"], api_key)
+            delete_package(server, channel, pkg["platform"], pkg["filename"], api_key)
             print("deleted", file=sys.stderr)
         except urllib.error.HTTPError as e:
             print(f"failed: {e.code} {e.reason}", file=sys.stderr)
