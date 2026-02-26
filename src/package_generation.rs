@@ -280,7 +280,7 @@ pub fn report_results(
 
     // Build report sections
     if !github_errors.is_empty() {
-        output.push_str("GitHub errors:\n");
+        output.push_str(&format!("GitHub errors ({}):\n", github_errors.len()));
         for name in &github_errors {
             output.push_str(&format!("  {name}\n"));
         }
@@ -288,7 +288,7 @@ pub fn report_results(
     }
 
     if !no_recipe.is_empty() {
-        output.push_str("No recipe generated:\n");
+        output.push_str(&format!("No recipe generated ({}):\n", no_recipe.len()));
         for ((name, reason), versions) in &no_recipe {
             output.push_str(&format!("  {name} {}: {reason}\n", versions.join(", ")));
         }
@@ -296,7 +296,10 @@ pub fn report_results(
     }
 
     if !not_on_github.is_empty() {
-        output.push_str("Package versions in conda, not on GitHub:\n");
+        output.push_str(&format!(
+            "Package versions in conda, not on GitHub ({}):\n",
+            not_on_github.len()
+        ));
         for (name, versions) in &not_on_github {
             output.push_str(&format!("  {name}: {}\n", versions.join(", ")));
         }
@@ -304,7 +307,10 @@ pub fn report_results(
     }
 
     if !unknown_in_conda.is_empty() {
-        output.push_str("Unknown packages in conda:\n");
+        output.push_str(&format!(
+            "Unknown packages in conda ({}):\n",
+            unknown_in_conda.len()
+        ));
         for name in unknown_in_conda {
             output.push_str(&format!("  {name}\n"));
         }
@@ -312,7 +318,7 @@ pub fn report_results(
     }
 
     if !in_conda.is_empty() {
-        output.push_str("OK (in conda):\n");
+        output.push_str(&format!("OK (in conda) ({}):\n", in_conda.len()));
         for (name, versions) in &in_conda {
             output.push_str(&format!("  {name}: {}\n", versions.join(", ")));
         }
@@ -320,7 +326,7 @@ pub fn report_results(
     }
 
     if !generated.is_empty() {
-        output.push_str("OK (generated):\n");
+        output.push_str(&format!("OK (generated) ({}):\n", generated.len()));
         for (name, versions) in &generated {
             output.push_str(&format!("  {name}: {}\n", versions.join(", ")));
         }
