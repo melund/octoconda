@@ -1206,6 +1206,44 @@ mod tests {
         );
     }
 
+    fn hcloud_names() -> Vec<&'static str> {
+        vec![
+            "checksums.txt",
+            "checksums.txt.sig",
+            "hcloud-darwin-amd64.tar.gz",
+            "hcloud-darwin-arm64.tar.gz",
+            "hcloud-freebsd-386.tar.gz",
+            "hcloud-freebsd-amd64.tar.gz",
+            "hcloud-freebsd-arm64.tar.gz",
+            "hcloud-freebsd-armv6.tar.gz",
+            "hcloud-freebsd-armv7.tar.gz",
+            "hcloud-linux-386.tar.gz",
+            "hcloud-linux-amd64.tar.gz",
+            "hcloud-linux-arm64.tar.gz",
+            "hcloud-linux-armv6.tar.gz",
+            "hcloud-linux-armv7.tar.gz",
+            "hcloud-windows-386.zip",
+            "hcloud-windows-amd64.zip",
+            "hcloud-windows-arm64.zip",
+        ]
+    }
+
+    #[test]
+    fn test_hcloud_names() {
+        platform_match_test(
+            &[
+                (Platform::Linux64, 10),
+                (Platform::LinuxAarch64, 11),
+                (Platform::Osx64, 2),
+                (Platform::OsxArm64, 3),
+                (Platform::Win64, 15),
+                (Platform::WinArm64, 16),
+            ],
+            &hcloud_names(),
+            "",
+        );
+    }
+
     #[test]
     fn test_yaml_escape_plain_string() {
         assert_eq!(yaml_escape("hello world"), "hello world");

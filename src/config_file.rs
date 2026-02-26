@@ -137,10 +137,7 @@ impl TryFrom<TomlPackage> for Package {
         let repository = Repository::try_from(value.repository.as_str())?;
         let name = conda_package_name(value.name.as_deref(), &repository.repo);
 
-        let release_prefix = value
-            .release_prefix
-            .or(value.name)
-            .map(|s| s.to_lowercase());
+        let release_prefix = value.release_prefix.map(|s| s.to_lowercase());
 
         let platforms = {
             let mut result = default_platforms();
