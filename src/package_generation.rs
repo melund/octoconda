@@ -2,7 +2,7 @@
 // © Tobias Hunger <tobias.hunger@gmail.com>
 
 use std::{
-    collections::{HashMap, HashSet},
+    collections::HashSet,
     io::Write as _,
     path::{Path, PathBuf},
     str::FromStr,
@@ -69,6 +69,28 @@ pub struct VersionPackagingStatus {
     pub status: Vec<PackagingStatus>,
 }
 
+pub struct PackageResult {
+    pub repository: String,
+    pub name: String,
+    pub versions: Vec<VersionPackagingStatus>,
+}
+
+impl PackageResult {
+    fn display_name(&self) -> String {
+        let repo_part = self.repository.rsplit('/').next().unwrap_or(&self.repository);
+        if self.name.eq_ignore_ascii_case(repo_part) {
+            self.repository.clone()
+        } else {
+            format!("{} ({})", self.repository, self.name)
+        }
+    }
+}
+
+pub enum StopReason {
+    Completed,
+    PackageLimit,
+}
+
 impl PackagingStatus {
     pub fn github_failed() -> Vec<Self> {
         vec![Self {
@@ -119,66 +141,140 @@ impl PackagingStatus {
     }
 }
 
-pub fn report_results(status: &HashMap<String, Vec<VersionPackagingStatus>>) -> String {
-    let mut result = String::new();
-    for (package, sub_status) in status {
-        let package_status = sub_status.iter().flat_map(|v| v.status.iter()).fold(
-            Status::Succeeded,
-            |acc, s| match (&s.status, acc) {
-                (&Status::Failed, _) => Status::Failed,
-                (&Status::Succeeded, Status::Failed) => Status::Failed,
-                (&Status::Succeeded, Status::Succeeded) => Status::Succeeded,
-                (&Status::Succeeded, Status::Skipped) => Status::Skipped,
-                (&Status::Skipped, Status::Failed) => Status::Failed,
-                (&Status::Skipped, Status::Succeeded) => Status::Skipped,
-                (&Status::Skipped, Status::Skipped) => Status::Skipped,
-            },
-        );
+pub fn report_results(results: &[PackageResult], stop_reason: &StopReason) -> String {
+    let mut output = String::new();
 
-        result.push_str(&format!(
-            "{package_status}: {} ({} packages)\n",
-            package,
-            sub_status.len(),
-        ));
+    // Header: first/last repository and stop reason
+    if let (Some(first), Some(last)) = (results.first(), results.last()) {
+        let reason = match stop_reason {
+            StopReason::Completed => "completed",
+            StopReason::PackageLimit => "stopped: package limit",
+        };
+        if first.repository == last.repository {
+            output.push_str(&format!("Processed: {} ({reason})\n\n", first.repository));
+        } else {
+            output.push_str(&format!(
+                "Processed: {} .. {} ({reason})\n\n",
+                first.repository, last.repository
+            ));
+        }
+    }
 
-        if package_status != Status::Succeeded {
-            for vs in sub_status {
-                let mut version = vs.version.clone().unwrap_or_default();
+    // Sort by display name for the sections
+    let mut sorted_indices: Vec<usize> = (0..results.len()).collect();
+    sorted_indices.sort_by_key(|&i| results[i].display_name());
 
-                let skipped = {
-                    let skipped = vs
-                        .status
-                        .iter()
-                        .filter_map(|s| (s.status == Status::Skipped).then_some(s.platform))
-                        .fold(String::new(), |acc, p| {
-                            if acc.is_empty() {
-                                format!("{p}")
-                            } else {
-                                format!("{acc}, {p}")
-                            }
-                        });
-                    if skipped.is_empty() {
-                        skipped
-                    } else {
-                        format!(" skipped: {skipped}")
-                    }
+    let mut github_errors: Vec<String> = vec![];
+    let mut no_recipe: Vec<String> = vec![];
+    let mut in_conda: Vec<(String, Vec<String>)> = vec![];
+    let mut generated: Vec<(String, Vec<String>)> = vec![];
+
+    for &i in &sorted_indices {
+        let pkg = &results[i];
+        let display = pkg.display_name();
+
+        if pkg.versions.iter().any(|v| v.version.is_none()) {
+            github_errors.push(display);
+            continue;
+        }
+
+        let mut pkg_in_conda = vec![];
+        let mut pkg_generated = vec![];
+
+        for v in &pkg.versions {
+            let ver = v.version.as_deref().unwrap_or("?");
+
+            let missing: Vec<String> = v
+                .status
+                .iter()
+                .filter(|s| s.status == Status::Skipped)
+                .map(|s| s.platform.to_string())
+                .collect();
+            let failed: Vec<&PackagingStatus> = v
+                .status
+                .iter()
+                .filter(|s| s.status == Status::Failed)
+                .collect();
+            let has_generated = v
+                .status
+                .iter()
+                .any(|s| s.status == Status::Succeeded && s.message == "ok");
+            let has_in_conda = v
+                .status
+                .iter()
+                .any(|s| s.status == Status::Succeeded && s.message == "already in conda");
+
+            if !failed.is_empty() {
+                let details: Vec<String> = failed
+                    .iter()
+                    .map(|s| {
+                        if s.platform == Platform::Unknown {
+                            s.message.clone()
+                        } else {
+                            format!("{} ({})", s.message, s.platform)
+                        }
+                    })
+                    .collect();
+                no_recipe.push(format!("  {} {}: {}", display, ver, details.join(", ")));
+            } else if !has_generated && !has_in_conda {
+                no_recipe.push(format!("  {} {}: no matching binary", display, ver));
+            } else {
+                let missing_note = if missing.is_empty() {
+                    String::new()
+                } else {
+                    format!(" (no: {})", missing.join(", "))
                 };
+                let formatted = format!("{ver}{missing_note}");
 
-                result.push_str(&format!("    {version}{skipped}\n"));
-
-                for s in &vs.status {
-                    if s.status == Status::Failed {
-                        result.push_str(&format!(
-                            "        {}: {} {}\n",
-                            s.status, s.platform, s.message
-                        ));
-                        version = version.chars().map(|_| ' ').collect()
-                    }
+                if has_generated {
+                    pkg_generated.push(formatted);
+                } else {
+                    pkg_in_conda.push(formatted);
                 }
             }
         }
+
+        if !pkg_in_conda.is_empty() {
+            in_conda.push((display.clone(), pkg_in_conda));
+        }
+        if !pkg_generated.is_empty() {
+            generated.push((display, pkg_generated));
+        }
     }
-    result
+
+    // Build report sections
+    if !github_errors.is_empty() {
+        output.push_str("GitHub errors:\n");
+        for name in &github_errors {
+            output.push_str(&format!("  {name}\n"));
+        }
+        output.push('\n');
+    }
+
+    if !no_recipe.is_empty() {
+        output.push_str("No recipe generated:\n");
+        for line in &no_recipe {
+            output.push_str(&format!("{line}\n"));
+        }
+        output.push('\n');
+    }
+
+    if !in_conda.is_empty() {
+        output.push_str("OK (in conda):\n");
+        for (name, versions) in &in_conda {
+            output.push_str(&format!("  {name}: {}\n", versions.join(", ")));
+        }
+        output.push('\n');
+    }
+
+    if !generated.is_empty() {
+        output.push_str("OK (generated):\n");
+        for (name, versions) in &generated {
+            output.push_str(&format!("  {name}: {}\n", versions.join(", ")));
+        }
+    }
+
+    output
 }
 
 fn match_platform<'a>(
@@ -502,11 +598,7 @@ fn generate_package(
         asset,
     ) {
         Ok(_) => PackagingStatus::success(*target_platform),
-        Err(e) => {
-            eprintln!(
-                "Error in {}@{package_version}-{target_platform},\n using {asset:#?}: {e}",
-                package.name
-            );
+        Err(_e) => {
             PackagingStatus::recipe_generation_failed(*target_platform)
         }
     }

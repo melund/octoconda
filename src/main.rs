@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // © Tobias Hunger <tobias.hunger@gmail.com>
 
-use std::collections::HashMap;
-
 use rand::random_range;
 
 use crate::package_generation::VersionPackagingStatus;
@@ -18,9 +16,10 @@ const PACKAGE_GENERATION_LIMIT: usize = 500;
 
 fn report_status(
     temporary_directory: &cli::WorkDir,
-    result: &HashMap<String, Vec<VersionPackagingStatus>>,
+    result: &[package_generation::PackageResult],
+    stop_reason: &package_generation::StopReason,
 ) -> anyhow::Result<()> {
-    let report = package_generation::report_results(result);
+    let report = package_generation::report_results(result, stop_reason);
     eprintln!("{report}");
 
     let report = format!(
@@ -44,11 +43,9 @@ fn main() -> Result<(), anyhow::Error> {
     let config = config_file::parse_config(&cli.config_file)?;
 
     let temporary_directory = cli.work_directory()?;
-    eprintln!("temporary dir: {}", temporary_directory.path().display());
 
     package_generation::generate_build_script(temporary_directory.path())?;
     package_generation::generate_env_file(temporary_directory.path(), &config)?;
-    eprintln!("Workdir is set up");
 
     tokio::runtime::Builder::new_multi_thread()
         .enable_all()
@@ -62,12 +59,11 @@ fn main() -> Result<(), anyhow::Error> {
             )
             .await?;
 
-            eprintln!("Conda: Channel information collected");
-
             let gh = github::Github::new()?;
 
-            let mut result = HashMap::new();
+            let mut result: Vec<package_generation::PackageResult> = vec![];
             let mut package_count = 0;
+            let mut stop_reason = package_generation::StopReason::Completed;
 
             let mut packages: Vec<_> = config.packages.iter().filter(|p| {
                 cli.filter.as_ref().is_none_or(|re| {
@@ -82,24 +78,25 @@ fn main() -> Result<(), anyhow::Error> {
 
             for package in packages {
                 let repo_packages = &repo_packages;
+                let repo_string = format!("{}/{}", package.repository.owner, package.repository.repo);
 
                 let (repository, releases) =
                     match gh.query_releases(&package.repository, &package.name).await {
                         Ok((repository, releases)) => (repository, releases),
-                        Err(e) => {
-                            eprintln!("Error: {e}");
-                            result.insert(
-                                package.name.clone(),
-                                vec![VersionPackagingStatus {
+                        Err(_e) => {
+                            result.push(package_generation::PackageResult {
+                                repository: repo_string,
+                                name: package.name.clone(),
+                                versions: vec![VersionPackagingStatus {
                                     version: None,
                                     status: package_generation::PackagingStatus::github_failed(),
                                 }],
-                            );
+                            });
                             continue;
                         }
                     };
 
-                let (packages, generated_count) = package_generation::generate_packaging_data(
+                let (versions, generated_count) = package_generation::generate_packaging_data(
                     package,
                     &repository,
                     &releases,
@@ -109,17 +106,18 @@ fn main() -> Result<(), anyhow::Error> {
                 )?;
                 package_count += generated_count;
 
-                result.insert(package.name.clone(), packages);
+                result.push(package_generation::PackageResult {
+                    repository: repo_string,
+                    name: package.name.clone(),
+                    versions,
+                });
                 if package_count >= PACKAGE_GENERATION_LIMIT {
-                    eprintln!(
-                        "Package limit reached after {} packages: SKIPPING package generation",
-                        result.len()
-                    );
+                    stop_reason = package_generation::StopReason::PackageLimit;
                     break;
                 }
             }
 
-            report_status(&temporary_directory, &result)?;
+            report_status(&temporary_directory, &result, &stop_reason)?;
 
             Ok(())
         })

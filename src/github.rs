@@ -10,19 +10,16 @@ pub struct Github {
 impl Github {
     pub fn new() -> anyhow::Result<Self> {
         let octocrab = if let Ok(token) = std::env::var("GITHUB_TOKEN") {
-            eprintln!("Github with personal token authentication");
             octocrab::OctocrabBuilder::default()
                 .personal_token(token.clone())
                 .build()
                 .context("failed to set GITHUB_TOKEN")?
         } else if let Ok(token) = std::env::var("GITHUB_ACCESS_TOKEN") {
-            eprintln!("Github with user access token authentication");
             octocrab::OctocrabBuilder::default()
                 .user_access_token(token.clone())
                 .build()
                 .context("failed to set GITHUB_TOKEN")?
         } else {
-            eprintln!("Github without authentication");
             octocrab::OctocrabBuilder::default()
                 .build()
                 .context("Failed to build without authentication")?
@@ -41,8 +38,6 @@ impl Github {
     )> {
         use std::collections::HashSet;
         use tokio_stream::StreamExt;
-
-        eprintln!("GH: querying {}/{}", repository.owner, repository.repo);
 
         let mut releases_result = Vec::new();
         // GitHub's offset-based pagination can return the same release on
@@ -94,7 +89,6 @@ impl Github {
                     releases_result.push((release, (version, build_number)));
                 }
             } else {
-                eprintln!("Invalid version when looking at {package_name}: {version} ({build})");
                 continue;
             }
         }
