@@ -164,7 +164,7 @@ pub fn report_results(
     sorted_indices.sort_by_key(|&i| results[i].display_name());
 
     let mut github_errors: Vec<String> = vec![];
-    let mut no_recipe: Vec<String> = vec![];
+    let mut no_recipe: BTreeMap<(String, String), Vec<String>> = BTreeMap::new();
     let mut not_on_github: Vec<(String, Vec<String>)> = vec![];
     let mut in_conda: Vec<(String, Vec<String>)> = vec![];
     let mut generated: Vec<(String, Vec<String>)> = vec![];
@@ -229,9 +229,15 @@ pub fn report_results(
                         }
                     })
                     .collect();
-                no_recipe.push(format!("  {} {}: {}", display, ver, details.join(", ")));
+                no_recipe
+                    .entry((display.clone(), details.join(", ")))
+                    .or_default()
+                    .push(ver.to_string());
             } else if !has_generated && !has_in_conda {
-                no_recipe.push(format!("  {} {}: no matching binary", display, ver));
+                no_recipe
+                    .entry((display.clone(), "no matching binary".to_string()))
+                    .or_default()
+                    .push(ver.to_string());
             } else {
                 let missing_note = if missing.is_empty() {
                     String::new()
@@ -270,8 +276,8 @@ pub fn report_results(
 
     if !no_recipe.is_empty() {
         output.push_str("No recipe generated:\n");
-        for line in &no_recipe {
-            output.push_str(&format!("{line}\n"));
+        for ((name, reason), versions) in &no_recipe {
+            output.push_str(&format!("  {name} {}: {reason}\n", versions.join(", ")));
         }
         output.push('\n');
     }
