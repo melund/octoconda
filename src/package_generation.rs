@@ -136,11 +136,15 @@ impl PackagingStatus {
     }
 }
 
-pub fn report_results(results: &[PackageResult]) -> String {
+pub fn report_results(results: &[PackageResult], total_configured: usize) -> String {
     let mut output = String::new();
 
     if let Some(first) = results.first() {
-        output.push_str(&format!("Processed: {}\n\n", first.repository));
+        output.push_str(&format!(
+            "Processed {}/{total_configured} repositories: {}\n\n",
+            results.len(),
+            first.repository,
+        ));
     }
 
     // Sort by display name for the sections

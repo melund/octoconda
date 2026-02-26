@@ -15,8 +15,9 @@ mod types;
 fn report_status(
     temporary_directory: &cli::WorkDir,
     result: &[package_generation::PackageResult],
+    total_configured: usize,
 ) -> anyhow::Result<()> {
-    let report = package_generation::report_results(result);
+    let report = package_generation::report_results(result, total_configured);
     eprintln!("{report}");
 
     let report = format!(
@@ -71,6 +72,8 @@ fn main() -> Result<(), anyhow::Error> {
                 packages.rotate_left(start);
             }
 
+            let total_packages = packages.len();
+
             for package in packages {
                 let repo_packages = &repo_packages;
                 let repo_string = format!("{}/{}", package.repository.owner, package.repository.repo);
@@ -106,7 +109,7 @@ fn main() -> Result<(), anyhow::Error> {
                 });
             }
 
-            report_status(&temporary_directory, &result)?;
+            report_status(&temporary_directory, &result, total_packages)?;
 
             Ok(())
         })
