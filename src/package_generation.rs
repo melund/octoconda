@@ -79,7 +79,11 @@ pub struct PackageResult {
 
 impl PackageResult {
     fn display_name(&self) -> String {
-        let repo_part = self.repository.rsplit('/').next().unwrap_or(&self.repository);
+        let repo_part = self
+            .repository
+            .rsplit('/')
+            .next()
+            .unwrap_or(&self.repository);
         if self.name.eq_ignore_ascii_case(repo_part) {
             self.repository.clone()
         } else {
@@ -175,11 +179,10 @@ pub fn report_results(
         let pkg = &results[i];
         let display = pkg.display_name();
 
-        let gh_err = pkg.versions.iter().find(|v| {
-            v.status
-                .iter()
-                .any(|s| s.status == Status::GithubFailed)
-        });
+        let gh_err = pkg
+            .versions
+            .iter()
+            .find(|v| v.status.iter().any(|s| s.status == Status::GithubFailed));
         if let Some(v) = gh_err {
             let msg = v
                 .status
@@ -688,9 +691,7 @@ fn generate_package(
         asset,
     ) {
         Ok(_) => PackagingStatus::success(*target_platform),
-        Err(_e) => {
-            PackagingStatus::recipe_generation_failed(*target_platform)
-        }
+        Err(_e) => PackagingStatus::recipe_generation_failed(*target_platform),
     }
 }
 
@@ -712,6 +713,25 @@ mod tests {
             "zoxide-0.9.8-x86_64-apple-darwin.tar.gz",
             "zoxide-0.9.8-x86_64-pc-windows-msvc.zip",
             "zoxide-0.9.8-x86_64-unknown-linux-musl.tar.gz",
+            "Source code",
+        ]
+    }
+
+    fn stripe_names() -> Vec<&'static str> {
+        vec![
+            "stripe-linux-checksums.txt",
+            "stripe-mac-checksums.txt",
+            "stripe-windows-checksums.txt",
+            "stripe_1.37.2_linux_amd64.deb",
+            "stripe_1.37.2_linux_amd64.rpm",
+            "stripe_1.37.2_linux_arm64.deb",
+            "stripe_1.37.2_linux_arm64.rpm",
+            "stripe_1.37.2_linux_arm64.tar.gz",
+            "stripe_1.37.2_linux_x86_64.tar.gz",
+            "stripe_1.37.2_mac-os_arm64.tar.gz",
+            "stripe_1.37.2_mac-os_x86_64.tar.gz",
+            "stripe_1.37.2_windows_i386.zip",
+            "stripe_1.37.2_windows_x86_64.zip",
             "Source code",
         ]
     }
@@ -1002,6 +1022,22 @@ mod tests {
             ],
             &zoxide_names(),
             "zoxide",
+        );
+    }
+
+    #[test]
+    fn test_stripe_names() {
+        platform_match_test(
+            &[
+                (Platform::LinuxAarch64, 7),
+                (Platform::Linux64, 8),
+                (Platform::OsxArm64, 9),
+                (Platform::Osx64, 10),
+                (Platform::Win32, 11),
+                (Platform::Win64, 12),
+            ],
+            &stripe_names(),
+            "stripe",
         );
     }
 

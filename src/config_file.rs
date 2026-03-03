@@ -89,9 +89,9 @@ fn default_platforms() -> HashMap<Platform, Vec<String>> {
             vec![
                 "(^|[\\._-])(amd64|x86_64|x64)[\\._-](apple[\\._-])?(darwin|macos|osx)(\\.gz|\\.xz|\\.zst|\\.tar\\.gz|\\.tar\\.xz|\\.tgz|\\.txz|\\.zip)?$"
                     .to_string(),
-                "(^|[\\._-])(darwin|macos|osx)[\\._-](amd64|x86_64|x64)(\\.gz|\\.xz|\\.zst|\\.tar\\.gz|\\.tar\\.xz|\\.tgz|\\.txz|\\.zip)?$"
+                "(^|[\\._-])(darwin|macos|mac-os|osx|os-x)[\\._-](amd64|x86_64|x64)(\\.gz|\\.xz|\\.zst|\\.tar\\.gz|\\.tar\\.xz|\\.tgz|\\.txz|\\.zip)?$"
                     .to_string(),
-                "(^|[\\._-])(darwin|macos|osx)(\\.gz|\\.xz|\\.zst|\\.tar\\.gz|\\.tar\\.xz|\\.tgz|\\.txz|\\.zip)?$"
+                "(^|[\\._-])(darwin|macos|mac-os|osx|os-x)(\\.gz|\\.xz|\\.zst|\\.tar\\.gz|\\.tar\\.xz|\\.tgz|\\.txz|\\.zip)?$"
                     .to_string(),
             ],
         ),
@@ -100,7 +100,7 @@ fn default_platforms() -> HashMap<Platform, Vec<String>> {
             vec![
                 "(^|[\\._-])(arm64|aarch64)[\\._-](apple[\\._-])?(darwin|macos|osx)(\\.gz|\\.xz|\\.zst|\\.tar\\.gz|\\.tar\\.xz|\\.tgz|\\.txz|\\.zip)?$"
                     .to_string(),
-                "(^|[\\._-])(darwin|macos|osx)[\\._-](arm64|aarch64)(\\.gz|\\.xz|\\.zst|\\.tar\\.gz|\\.tar\\.xz|\\.tgz|\\.txz|\\.zip)?$"
+                "(^|[\\._-])(darwin|macos|mac-os|osx|os-x)[\\._-](arm64|aarch64)(\\.gz|\\.xz|\\.zst|\\.tar\\.gz|\\.tar\\.xz|\\.tgz|\\.txz|\\.zip)?$"
                     .to_string(),
             ],
         ),
@@ -108,7 +108,7 @@ fn default_platforms() -> HashMap<Platform, Vec<String>> {
             Platform::Win32,
             vec![
                 "(^|[\\._-])(x86|i686)[\\._-](pc)?[\\._-]windows([\\._-]msvc)?(\\.gz|\\.xz|\\.zst|\\.zip|\\.exe)?$".to_string(),
-                "(^|[\\._-])(windows|win(32|64)?)[\\._-](32-bit|i686|x86)(\\.gz|\\.xz|\\.zst|\\.zip|\\.exe)?$".to_string(),
+                "(^|[\\._-])(windows|win(32|64)?)[\\._-](32-bit|i386|i486|i586|i686|x86)(\\.gz|\\.xz|\\.zst|\\.zip|\\.exe)?$".to_string(),
                 "(^|[\\._-])win32(\\.gz|\\.xz|\\.zst|\\.zip|\\.exe)?$".to_string(),
             ],
         ),
