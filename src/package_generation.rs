@@ -379,7 +379,7 @@ pub fn generate_packaging_data(
 
         let mut found_platforms = HashSet::new();
 
-        for (platform, pattern) in &package.platforms {
+        for (platform, pattern) in package.platform_pattern()? {
             if let Some(asset) = match_platform(&pattern[..], &r.assets[..]) {
                 found_platforms.insert(platform);
 
@@ -388,7 +388,7 @@ pub fn generate_packaging_data(
                         && r.package_record.name.as_normalized() == package.name
                         && r.package_record.version == version
                 }) {
-                    version_result.push(PackagingStatus::skip_platform(*platform));
+                    version_result.push(PackagingStatus::skip_platform(platform));
                     continue;
                 }
 
@@ -397,14 +397,14 @@ pub fn generate_packaging_data(
                     package,
                     version_string,
                     *build_number,
-                    platform,
+                    &platform,
                     repository,
                     asset,
                 ));
             }
         }
 
-        for platform in package.platforms.keys() {
+        for platform in package.platforms() {
             if !found_platforms.contains(platform) {
                 version_result.push(PackagingStatus::missing_platform(*platform));
             }
@@ -576,15 +576,6 @@ fn extract_about(
 about:
   description: >
     {summary_text}
-
-    ... repackaged from github release.
-
-    No files were modified, so all SHAs should match the github release files.
-    Files might have been moved, but no files should have been added or removed
-    (except for obvious junk files).
-
-    Check the extra package data for details on where the github release file was
-    taken from.
 {homepage}{license}{summary}"#,
         )
     };

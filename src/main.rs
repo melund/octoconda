@@ -41,6 +41,8 @@ fn main() -> Result<(), anyhow::Error> {
 
     let config = config_file::parse_config(&cli.config_file)?;
 
+    eprintln!("max releases: {}", config.conda.max_import_releases);
+
     let temporary_directory = cli.work_directory()?;
 
     package_generation::generate_build_script(temporary_directory.path())?;
@@ -61,12 +63,16 @@ fn main() -> Result<(), anyhow::Error> {
 
             let mut result: Vec<package_generation::PackageResult> = vec![];
 
-            let mut packages: Vec<_> = config.packages.iter().filter(|p| {
-                cli.filter.as_ref().is_none_or(|re| {
-                    let full_name = format!("{}/{}", p.repository.owner, p.repository.repo);
-                    re.is_match(&full_name)
+            let mut packages: Vec<_> = config
+                .packages
+                .iter()
+                .filter(|p| {
+                    cli.filter.as_ref().is_none_or(|re| {
+                        let full_name = format!("{}/{}", p.repository.owner, p.repository.repo);
+                        re.is_match(&full_name)
+                    })
                 })
-            }).collect();
+                .collect();
             if !packages.is_empty() {
                 let start = random_range(0..packages.len());
                 packages.rotate_left(start);
@@ -76,25 +82,32 @@ fn main() -> Result<(), anyhow::Error> {
 
             for package in packages {
                 let repo_packages = &repo_packages;
-                let repo_string = format!("{}/{}", package.repository.owner, package.repository.repo);
+                let repo_string =
+                    format!("{}/{}", package.repository.owner, package.repository.repo);
 
-                let (repository, releases) =
-                    match gh.query_releases(&package.repository, &package.name).await {
-                        Ok((repository, releases)) => (repository, releases),
-                        Err(e) => {
-                            result.push(package_generation::PackageResult {
-                                repository: repo_string,
-                                name: package.name.clone(),
-                                versions: vec![VersionPackagingStatus {
-                                    version: None,
-                                    status: package_generation::PackagingStatus::github_failed(
-                                        &format!("{e:#}"),
-                                    ),
-                                }],
-                            });
-                            continue;
-                        }
-                    };
+                let (repository, releases) = match gh
+                    .query_releases(
+                        &package.repository,
+                        &package.name,
+                        config.conda.max_import_releases,
+                    )
+                    .await
+                {
+                    Ok((repository, releases)) => (repository, releases),
+                    Err(e) => {
+                        result.push(package_generation::PackageResult {
+                            repository: repo_string,
+                            name: package.name.clone(),
+                            versions: vec![VersionPackagingStatus {
+                                version: None,
+                                status: package_generation::PackagingStatus::github_failed(
+                                    &format!("{e:#}"),
+                                ),
+                            }],
+                        });
+                        continue;
+                    }
+                };
 
                 let versions = package_generation::generate_packaging_data(
                     package,
@@ -111,11 +124,8 @@ fn main() -> Result<(), anyhow::Error> {
                 });
             }
 
-            let configured_names: std::collections::HashSet<&str> = config
-                .packages
-                .iter()
-                .map(|p| p.name.as_str())
-                .collect();
+            let configured_names: std::collections::HashSet<&str> =
+                config.packages.iter().map(|p| p.name.as_str()).collect();
             let mut unknown_in_conda: Vec<String> = repo_packages
                 .iter()
                 .map(|r| r.package_record.name.as_normalized().to_string())
@@ -124,7 +134,12 @@ fn main() -> Result<(), anyhow::Error> {
             unknown_in_conda.sort();
             unknown_in_conda.dedup();
 
-            report_status(&temporary_directory, &result, total_packages, &unknown_in_conda)?;
+            report_status(
+                &temporary_directory,
+                &result,
+                total_packages,
+                &unknown_in_conda,
+            )?;
 
             Ok(())
         })

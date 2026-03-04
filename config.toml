@@ -1,5 +1,7 @@
 [conda]
 channel = "github-releases"
+max-import-releases = 10
+
 
 [[packages]]
 repository = "01mf02/jaq"

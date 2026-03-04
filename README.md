@@ -21,6 +21,7 @@ or more `[[packages]]` entries.
 | Key | Required | Description |
 |---|---|---|
 | `channel` | yes | Conda channel used to check for existing versions. Can be a short name (e.g. `github-releases`) or a full `https://prefix.dev/...` URL. |
+| `max-import-releases` | no | Maximum number of releases to import initially. Defaults to all releases releases. |
 
 ### `[[packages]]`
 

@@ -32,6 +32,7 @@ impl Github {
         &self,
         repository: &crate::types::Repository,
         package_name: &str,
+        max_import_releases: usize,
     ) -> anyhow::Result<(
         octocrab::models::Repository,
         Vec<(octocrab::models::repos::Release, (String, u32))>,
@@ -60,7 +61,11 @@ impl Github {
         tokio::pin!(stream);
         while let Some(release) = stream.try_next().await? {
             let tag = &release.tag_name;
-            if tag.contains("prerelease") || tag.contains("alpha") || tag.contains("beta") {
+            if tag.contains("prerelease")
+                || tag.contains("alpha")
+                || tag.contains("beta")
+                || tag.contains("rc")
+            {
                 continue;
             }
 
@@ -86,7 +91,10 @@ impl Github {
             {
                 let build_number: u32 = build.parse().unwrap_or(0);
                 if seen_versions.insert((version.clone(), build_number)) {
-                    releases_result.push((release, (version, build_number)));
+                    releases_result.push((release, (version.clone(), build_number)));
+                    if releases_result.len() >= max_import_releases {
+                        return Ok((repo_result, releases_result));
+                    }
                 }
             } else {
                 continue;

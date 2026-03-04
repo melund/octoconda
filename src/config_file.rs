@@ -7,7 +7,7 @@ use std::{
     path::Path,
 };
 
-use anyhow::Context;
+use anyhow::{Context, anyhow};
 use rattler_conda_types::Platform;
 use serde::Deserialize;
 
@@ -42,7 +42,38 @@ pub struct TomlPackage {
 pub struct Package {
     pub name: String,
     pub repository: Repository,
-    pub platforms: HashMap<Platform, Vec<regex::Regex>>,
+    release_prefix: Option<String>,
+    platform_pattern: HashMap<Platform, Vec<String>>,
+}
+
+impl Package {
+    pub fn platforms(&self) -> impl Iterator<Item = &Platform> {
+        self.platform_pattern.keys()
+    }
+
+    pub fn platform_pattern(&self) -> anyhow::Result<HashMap<Platform, Vec<regex::Regex>>> {
+        self.platform_pattern
+            .iter()
+            .map(|(k, v)| {
+                let re = v
+                    .iter()
+                    .map(|r| {
+                        let pattern = if let Some(rp) = &self.release_prefix {
+                            format!("^{rp}([\\._-].+)?[\\._-]{r}")
+                        } else {
+                            format!("(^|[\\._-]){r}")
+                        };
+
+                        regex::RegexBuilder::new(&pattern)
+                            .case_insensitive(true)
+                            .build()
+                            .context(format!("failed to parse regex for platform {k}"))
+                    })
+                    .collect::<anyhow::Result<Vec<_>>>()?;
+                Ok((k.clone(), re))
+            })
+            .collect::<anyhow::Result<HashMap<_, _>>>()
+    }
 }
 
 const ARCHIVE: &str =
@@ -155,7 +186,7 @@ impl TryFrom<TomlPackage> for Package {
 
         let release_prefix = value.release_prefix.clone();
 
-        let platforms = {
+        let platform_pattern = {
             let mut result = default_platforms();
             for (k, v) in value.platforms.unwrap_or_default().drain() {
                 let strings = match v {
@@ -171,40 +202,27 @@ impl TryFrom<TomlPackage> for Package {
                 };
                 result.insert(k, strings);
             }
-
             result
-                .drain()
-                .map(|(k, v)| {
-                    let re = v
-                        .iter()
-                        .map(|r| {
-                            let pattern = if let Some(rp) = &release_prefix {
-                                format!("^{rp}([\\._-].+)?[\\._-]{r}")
-                            } else {
-                                format!("(^|[\\._-]){r}")
-                            };
-                            regex::RegexBuilder::new(&pattern)
-                                .case_insensitive(true)
-                                .build()
-                                .context(format!("failed to parse regex for platform {k}"))
-                        })
-                        .collect::<anyhow::Result<Vec<_>>>()?;
-                    Ok((k, re))
-                })
-                .collect::<anyhow::Result<HashMap<_, _>>>()?
         };
 
         Ok(Package {
             name,
             repository,
-            platforms,
+            release_prefix,
+            platform_pattern,
         })
     }
+}
+
+fn max_import_releases_default() -> usize {
+    usize::MAX
 }
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct Conda {
     pub channel: String,
+    #[serde(rename = "max-import-releases", default = "max_import_releases_default")]
+    pub max_import_releases: usize,
 }
 
 impl Conda {
@@ -237,6 +255,10 @@ impl TryFrom<TomlConfig> for Config {
     type Error = anyhow::Error;
 
     fn try_from(mut value: TomlConfig) -> Result<Self, Self::Error> {
+        if value.conda.max_import_releases < 1 {
+            return Err(anyhow!("max-import-releases must be >= 1"));
+        }
+
         // Check for duplicate package names across ALL entries (including deprecated).
         {
             let mut seen: HashMap<String, (&str, bool)> = HashMap::new();
@@ -287,7 +309,7 @@ impl Config {
     pub fn all_platforms(&self) -> HashSet<Platform> {
         self.packages
             .iter()
-            .flat_map(|p| p.platforms.keys())
+            .flat_map(|p| p.platform_pattern.keys())
             .copied()
             .collect()
     }
@@ -316,6 +338,7 @@ pub mod tests {
         } else {
             Some(release_prefix.to_string())
         };
+
         let toml = TomlPackage {
             name: None,
             release_prefix: rp,
@@ -324,7 +347,7 @@ pub mod tests {
             deprecated: false,
         };
         let package: super::Package = toml.try_into().unwrap();
-        package.platforms
+        package.platform_pattern().unwrap()
     }
 
     fn toml_config(packages: Vec<TomlPackage>) -> TomlConfig {
@@ -332,6 +355,7 @@ pub mod tests {
             packages,
             conda: Conda {
                 channel: "test-channel".to_string(),
+                max_import_releases: 5,
             },
         }
     }
