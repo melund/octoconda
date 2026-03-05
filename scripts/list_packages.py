@@ -5,6 +5,7 @@ import argparse
 import json
 import os
 import sys
+import time
 import urllib.request
 from datetime import datetime, timezone
 
@@ -81,10 +82,14 @@ def main():
                         help="Server URL (default: https://prefix.dev)")
     parser.add_argument("--delete-oldest", type=int, metavar="N",
                         help="Delete the N oldest packages")
-    parser.add_argument("--delete-name", metavar="NAME",
-                        help="Delete all packages with this name")
-    parser.add_argument("--delete-file", nargs="+", metavar="PLATFORM/FILENAME",
-                        help="Delete specific files (e.g. linux-64/package-1.0-h1234_0.conda)")
+    parser.add_argument("--delete-name", action="append", metavar="NAME",
+                        help="Delete all packages with these names (repeatable)")
+    parser.add_argument("--delete-file", action="append", metavar="PLATFORM/FILENAME",
+                        help="Delete specific files (repeatable, e.g. linux-64/package-1.0-h1234_0.conda)")
+    parser.add_argument("--pause-every", type=int, default=sys.maxsize, metavar="N",
+                        help="Pause after every N deletions (default: never)")
+    parser.add_argument("--pause-seconds", type=float, default=0, metavar="M",
+                        help="Seconds to pause (default: 0)")
     args = parser.parse_args()
 
     delete_opts = [args.delete_oldest is not None, args.delete_name is not None, args.delete_file is not None]
@@ -109,6 +114,9 @@ def main():
         total = len(to_delete)
         failed = 0
         for i, pkg in enumerate(to_delete, 1):
+            if i > 1 and (i - 1) % args.pause_every == 0 and args.pause_seconds > 0:
+                print(f"  Pausing for {args.pause_seconds}s...", file=sys.stderr)
+                time.sleep(args.pause_seconds)
             print(f"  [{i}/{total}] {pkg['platform']}/{pkg['filename']} ... ", end="", file=sys.stderr)
             try:
                 delete_package(server, channel, pkg["platform"], pkg["filename"], api_key)
@@ -146,9 +154,10 @@ def main():
         sys.exit(1)
 
     if args.delete_name is not None:
-        to_delete = [p for p in packages if p["name"] == args.delete_name]
+        names = set(args.delete_name)
+        to_delete = [p for p in packages if p["name"] in names]
         if not to_delete:
-            print(f"No packages found with name '{args.delete_name}'", file=sys.stderr)
+            print(f"No packages found with names: {', '.join(sorted(names))}", file=sys.stderr)
             sys.exit(1)
     else:
         to_delete = packages[:args.delete_oldest]
@@ -157,6 +166,9 @@ def main():
     total = len(to_delete)
     failed = 0
     for i, pkg in enumerate(to_delete, 1):
+        if i > 1 and (i - 1) % args.pause_every == 0 and args.pause_seconds > 0:
+            print(f"  Pausing for {args.pause_seconds}s...", file=sys.stderr)
+            time.sleep(args.pause_seconds)
         date_str = format_timestamp(pkg["timestamp"])
         print(f"  [{i}/{total}] {date_str}  {pkg['platform']:20s}  {pkg['platform']}/{pkg['filename']} ... ", end="", file=sys.stderr)
         try:

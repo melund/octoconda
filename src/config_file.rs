@@ -70,7 +70,7 @@ impl Package {
                             .context(format!("failed to parse regex for platform {k}"))
                     })
                     .collect::<anyhow::Result<Vec<_>>>()?;
-                Ok((k.clone(), re))
+                Ok((*k, re))
             })
             .collect::<anyhow::Result<HashMap<_, _>>>()
     }
@@ -79,7 +79,7 @@ impl Package {
 const ARCHIVE: &str =
     "\\.tar\\.gz|\\.tar\\.xz|\\.tar\\.bz2|\\.tar\\.zstd?|\\.tgz|\\.txz|\\.tbz|\\.zip";
 const COMPRESSED: &str = "\\.gz|\\.xz|\\.zstd?|\\.bz2";
-const VERSION: &str = "v\\d+([\\.[^\\.]+])*";
+const VERSION: &str = "v?\\d+([\\.[^\\.]+])*";
 const VER: &str = "([\\._-]v\\d+([\\.[^\\.]+])*)?";
 
 const X86: &str = "(intel[_-]?32|i?[3-6]86|x86|32[_-]?bit)";
@@ -221,7 +221,10 @@ fn max_import_releases_default() -> usize {
 #[derive(Clone, Debug, Deserialize)]
 pub struct Conda {
     pub channel: String,
-    #[serde(rename = "max-import-releases", default = "max_import_releases_default")]
+    #[serde(
+        rename = "max-import-releases",
+        default = "max_import_releases_default"
+    )]
     pub max_import_releases: usize,
 }
 

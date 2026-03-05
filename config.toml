@@ -700,9 +700,13 @@ repository = "cameron-martin/bazel-lsp"
 
 [[packages]]
 repository = "Canop/dysk"
+# Every architecture bundled in one zip file
+deprecated = true
 
 [[packages]]
 repository = "Canop/rhit"
+# Every architecture bundled in one zip file
+deprecated = true
 
 [[packages]]
 repository = "cantino/mcfly"
@@ -748,6 +752,8 @@ repository = "cea-hpc/sshproxy"
 
 [[packages]]
 repository = "cert-manager/cert-manager"
+# It just releases some yaml files and sources
+deprecated = true
 
 [[packages]]
 repository = "cert-manager/cmctl"
@@ -809,6 +815,8 @@ repository = "checkmake/checkmake"
 
 [[packages]]
 repository = "Checkmarx/kics"
+# Just one zip file, no idea what is in there
+detrecated = true
 
 [[packages]]
 repository = "chenjiandongx/kubectl-images"
@@ -821,6 +829,7 @@ repository = "chime/mani-diffy"
 
 [[packages]]
 repository = "chmln/handlr"
+platforms = { linux-64 = "^handlr$", linux-aarch64 = "null", linux-32 = "null", win-64 = "null", osx-64 = "null", osx-arm64 = "null", win-32 = "null", win-arm64 = "null" }
 
 [[packages]]
 repository = "chmln/sd"
@@ -880,6 +889,8 @@ repository = "clok/sm"
 
 [[packages]]
 repository = "cloud-hypervisor/cloud-hypervisor"
+# Needs some more research to figure out which binary is which.
+deprecated = true
 
 [[packages]]
 repository = "cloud66-oss/copper"
@@ -1052,6 +1063,7 @@ repository = "cpisciotta/xcbeautify"
 
 [[packages]]
 repository = "CQLabs/homebrew-dcm"
+platforms = { win-32 = "null", linux-aarch64 = "^dcm-linux-arm-release.zip", linux-64 = "^dcm-linux-x64-release.zip$", osx-arm64 = "^dcm-macos-arm-release.zip$", osx-64 = "^dcm-macos-x64-release.zip" }
 
 [[packages]]
 repository = "crate-ci/cargo-release"
@@ -3699,6 +3711,8 @@ repository = "oligot/go-mod-upgrade"
 
 [[packages]]
 repository = "ollama/ollama"
+# This is too big to upload
+deprecated = true
 
 [[packages]]
 repository = "omegion/ssh-manager"
