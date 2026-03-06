@@ -5749,6 +5749,10 @@ repository = "yuuki/tcpulse"
 [[packages]]
 repository = "yuyaban/gitlab-comment"
 
+# PR: #6
+[[packages]]
+repository = "yuzutech/kroki-cli"
+
 [[packages]]
 repository = "zaghaghi/openapi-tui"
 
