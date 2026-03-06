@@ -406,6 +406,8 @@ repository = "Azure/azure-dev"
 
 [[packages]]
 repository = "Azure/bicep"
+# Binaries in tools/, which is not handled
+deprecated = true
 
 [[packages]]
 repository = "Azure/draft"
@@ -807,6 +809,8 @@ repository = "chatwork/kibertas"
 
 [[packages]]
 repository = "che-incubator/chectl"
+# BROKEN: node module folder will not be found
+deprecated = true
 
 [[packages]]
 repository = "cheat/cheat"
@@ -817,7 +821,7 @@ repository = "checkmake/checkmake"
 [[packages]]
 repository = "Checkmarx/kics"
 # Just one zip file, no idea what is in there
-detrecated = true
+deprecated = true
 
 [[packages]]
 repository = "chenjiandongx/kubectl-images"
@@ -834,6 +838,8 @@ platforms = { linux-64 = "^handlr$", linux-aarch64 = "null", linux-32 = "null", 
 
 [[packages]]
 repository = "chmln/sd"
+# BROKEN: packages part of the target folder of a rust project
+deprecated = true
 
 [[packages]]
 repository = "chmouel/snazy"
@@ -973,9 +979,12 @@ repository = "cococonscious/koji"
 
 [[packages]]
 repository = "cocogitto/cocogitto"
+# Binary in cog/cog, with other random files around the dir
+deprecated = true
 
 [[packages]]
 repository = "Code-Hex/gqldoc"
+# Double -check why this is disabled...
 deprecated = true
 
 [[packages]]
@@ -999,6 +1008,8 @@ repository = "comtrya/comtrya"
 
 [[packages]]
 repository = "concourse/concourse"
+# BROKEN: Resource files are probably in the wrong location
+deprecated = true
 
 [[packages]]
 repository = "container-tools/spectrum"
@@ -1090,6 +1101,8 @@ name = "create_go_app"
 
 [[packages]]
 repository = "CrociDB/bulletty"
+# Package contains a tar.gz in a random location
+deprecated = true
 
 [[packages]]
 repository = "Crocmagnon/fatcontext"
@@ -1372,6 +1385,8 @@ repository = "dtan4/s3url"
 
 [[packages]]
 repository = "dthagard/tforganize"
+# BROKEN: No binary in there?
+deprecated = true
 
 [[packages]]
 repository = "ducaale/xh"
@@ -1705,6 +1720,8 @@ repository = "future-architect/tftarget"
 
 [[packages]]
 repository = "g-plane/pnpm-shell-completion"
+# BROKEN: Only contains shell completions which are not exposed at all
+deprecated = true
 
 [[packages]]
 repository = "gabeduke/kubectl-iexec"
@@ -2410,6 +2427,8 @@ repository = "jdx/usage"
 
 [[packages]]
 repository = "jedisct1/minisign"
+# BROKEN: ONE version has multiple architectures in one file in arch-specific folders?
+# deprecated = true
 
 [[packages]]
 repository = "jedisct1/piknik"
@@ -2822,6 +2841,8 @@ repository = "krallin/tini"
 
 [[packages]]
 repository = "kreuzwerker/awsu"
+# BROKEN: No binary in package
+deprecated = true
 
 [[packages]]
 repository = "kreuzwerker/envplate"
@@ -3085,6 +3106,8 @@ repository = "llogick/zigscient"
 
 [[packages]]
 repository = "localstack/localstack-cli"
+# BROKEN: build script fails as it can not remove a folder it thinks should be empty
+deprecated = true
 
 [[packages]]
 repository = "loeffel-io/ls-lint"
@@ -3182,6 +3205,9 @@ repository = "mantil-io/mantil"
 
 [[packages]]
 repository = "marcosnils/bin"
+name = "macrosnils-bin"
+# BROKEN: build script fails!
+deprecated = true
 
 [[packages]]
 repository = "marp-team/marp-cli"
@@ -3695,7 +3721,7 @@ repository = "ogham/dog"
 
 [[packages]]
 repository = "ogham/exa"
-# Replaced by eza!
+# INACTIVE, use eza
 deprecated = true
 
 [[packages]]
@@ -3914,6 +3940,9 @@ repository = "pemistahl/grex"
 
 [[packages]]
 repository = "pen-lang/pen"
+# BROKEN: Package contains rust sources
+deprecated = true
+
 
 [[packages]]
 repository = "Percona-Lab/mysql_random_data_load"
@@ -3952,6 +3981,8 @@ repository = "phiresky/ripgrep-all"
 
 [[packages]]
 repository = "pimalaya/himalaya"
+# BROKEN: Build script fails
+deprecated = true
 
 [[packages]]
 repository = "pinterest/ktlint"
@@ -4374,6 +4405,8 @@ repository = "sahilm/yamldiff"
 
 [[packages]]
 repository = "samuel-lucas6/Kryptor"
+# BROKEN: One build script fails
+deprecated = true
 
 [[packages]]
 repository = "samwho/spacer"
@@ -4480,6 +4513,8 @@ repository = "sharkdp/pastel"
 
 [[packages]]
 repository = "sharkdp/vivid"
+# BROKEN: Build script fails
+deprecated = true
 
 [[packages]]
 repository = "sheepla/fzwiki"
@@ -5130,6 +5165,8 @@ deprecated = true
 
 [[packages]]
 repository = "temporalio/temporal"
+# BROKEN: Symlinks on windows
+deprecated = true
 
 [[packages]]
 repository = "tenable/terrascan"
