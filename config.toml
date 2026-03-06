@@ -14,6 +14,7 @@ repository = "8051Enthusiast/biodiff"
 
 [[packages]]
 repository = "99designs/aws-vault"
+# INACTIVE: Project is marked as abandoned
 deprecated = true
 
 [[packages]]
@@ -51,6 +52,7 @@ repository = "achristmascarl/rainfrog"
 
 [[packages]]
 repository = "acorn-io/runtime"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -123,6 +125,7 @@ repository = "alexpasmantier/television"
 
 [[packages]]
 repository = "allero-io/allero"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -199,12 +202,16 @@ repository = "aporia-ai/kubesurvival"
 
 [[packages]]
 repository = "apple/container"
+# BROKEN: No supported package format
+deprecated = true
 
 [[packages]]
 repository = "apple/pkl"
 
 [[packages]]
 repository = "apple/pkl-go"
+# BROKEN: Source code only
+deprecated = true
 
 [[packages]]
 repository = "aptly-dev/aptly"
@@ -214,6 +221,7 @@ repository = "aquaproj/aqua-registry-updater"
 
 [[packages]]
 repository = "aquaproj/example-go-slsa-provenance"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -272,6 +280,7 @@ repository = "Arriven/db1000n"
 
 [[packages]]
 repository = "arrow2nd/nekome"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -315,6 +324,7 @@ repository = "astral-sh/ruff"
 
 [[packages]]
 repository = "astral-sh/rye"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -383,6 +393,7 @@ repository = "awslabs/ssosync"
 
 [[packages]]
 repository = "awslabs/yesiscan"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -396,6 +407,7 @@ repository = "ayoisaiah/f2"
 
 [[packages]]
 repository = "Azure/aks-engine"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -406,7 +418,7 @@ repository = "Azure/azure-dev"
 
 [[packages]]
 repository = "Azure/bicep"
-# Binaries in tools/, which is not handled
+# BROKEN: Binaries in tools/, which is not handled
 deprecated = true
 
 [[packages]]
@@ -428,6 +440,7 @@ repository = "babarot/gist"
 
 [[packages]]
 repository = "babarot/git-bump"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -441,10 +454,12 @@ repository = "babarot/iap_curl"
 
 [[packages]]
 repository = "babarot/stein"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
 repository = "babarot/vtest"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -458,6 +473,7 @@ repository = "barnybug/cli53"
 
 [[packages]]
 repository = "barthr/redo"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -484,6 +500,7 @@ repository = "BeaconBay/ck"
 [[packages]]
 repository = "Bearer/gon"
 name = "bearer_gon"
+platforms = { osx-64 = "^gon_macos.zip$", osx-arm64 = "^gon-macos.zip$" }
 
 [[packages]]
 repository = "becheran/mlc"
@@ -539,6 +556,8 @@ repository = "bitnami/charts-syncer"
 
 [[packages]]
 repository = "bitwarden/clients"
+# BROKEN: No binaries detected
+deprecated = true
 
 [[packages]]
 repository = "bitwarden/sdk-sm"
@@ -646,6 +665,7 @@ repository = "BurntSushi/ripgrep"
 
 [[packages]]
 repository = "BurntSushi/xsv"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -686,9 +706,12 @@ repository = "c1982/bomberman"
 
 [[packages]]
 repository = "caarlos0/fork-cleaner"
+# BROKEN: Executable not found in main folder. Not executable?
+deprecated = true
 
 [[packages]]
 repository = "caarlos0/mdtree"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -702,12 +725,12 @@ repository = "cameron-martin/bazel-lsp"
 
 [[packages]]
 repository = "Canop/dysk"
-# Every architecture bundled in one zip file
+# BROKEN: Every architecture bundled in one zip file
 deprecated = true
 
 [[packages]]
 repository = "Canop/rhit"
-# Every architecture bundled in one zip file
+# BROKEN: Every architecture bundled in one zip file
 deprecated = true
 
 [[packages]]
@@ -755,7 +778,7 @@ repository = "cea-hpc/sshproxy"
 
 [[packages]]
 repository = "cert-manager/cert-manager"
-# It just releases some yaml files and sources
+# UNSUITED: It just releases some yaml files and sources
 deprecated = true
 
 [[packages]]
@@ -781,6 +804,7 @@ repository = "chaqchase/lla"
 
 [[packages]]
 repository = "charmbracelet/charm"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -820,7 +844,7 @@ repository = "checkmake/checkmake"
 
 [[packages]]
 repository = "Checkmarx/kics"
-# Just one zip file, no idea what is in there
+# BROKEN: Just one zip file, no idea what is in there
 deprecated = true
 
 [[packages]]
@@ -896,7 +920,7 @@ repository = "clok/sm"
 
 [[packages]]
 repository = "cloud-hypervisor/cloud-hypervisor"
-# Needs some more research to figure out which binary is which.
+# BROKEN: Multiple architectures in one package
 deprecated = true
 
 [[packages]]
@@ -979,12 +1003,12 @@ repository = "cococonscious/koji"
 
 [[packages]]
 repository = "cocogitto/cocogitto"
-# Binary in cog/cog, with other random files around the dir
+# BROKEN: Binary in cog/cog, with other random files around the dir
 deprecated = true
 
 [[packages]]
 repository = "Code-Hex/gqldoc"
-# Double -check why this is disabled...
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -1001,6 +1025,7 @@ repository = "commercialhaskell/stack"
 
 [[packages]]
 repository = "compose/transporter"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -1013,6 +1038,7 @@ deprecated = true
 
 [[packages]]
 repository = "container-tools/spectrum"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -1101,7 +1127,7 @@ name = "create_go_app"
 
 [[packages]]
 repository = "CrociDB/bulletty"
-# Package contains a tar.gz in a random location
+# BROKEN: Package contains a tar.gz in a random location
 deprecated = true
 
 [[packages]]
@@ -1136,6 +1162,7 @@ repository = "cyberark/kubeletctl"
 
 [[packages]]
 repository = "cybozu/assam"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -1201,10 +1228,12 @@ repository = "datarootsio/tf-profile"
 
 [[packages]]
 repository = "datastax-labs/astra-cli"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
 repository = "datreeio/datree"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -1372,6 +1401,7 @@ repository = "dstotijn/hetty"
 
 [[packages]]
 repository = "dtan4/ghrls"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -1526,6 +1556,7 @@ repository = "F1bonacc1/process-compose"
 
 [[packages]]
 repository = "fabpot/local-php-security-checker"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -1558,6 +1589,7 @@ name = "fastly_cli"
 
 [[packages]]
 repository = "fastly/terrctl"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -1574,6 +1606,7 @@ repository = "ffuf/ffuf"
 
 [[packages]]
 repository = "fiatjaf/jiq"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -1614,6 +1647,7 @@ repository = "fission/fission"
 
 [[packages]]
 repository = "flatt-security/shisho"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -1797,6 +1831,7 @@ repository = "git-bug/git-bug"
 
 [[packages]]
 repository = "git-chglog/git-chglog"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -1918,6 +1953,7 @@ repository = "golang-migrate/migrate"
 
 [[packages]]
 repository = "golang/mock"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -2028,6 +2064,7 @@ repository = "grafana/grafanactl"
 
 [[packages]]
 repository = "grafana/grizzly"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -2171,6 +2208,7 @@ repository = "hherman1/gq"
 
 [[packages]]
 repository = "hidetatz/kubecolor"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -2178,6 +2216,7 @@ repository = "high-moctane/mocword"
 
 [[packages]]
 repository = "high-moctane/nextword"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -2303,6 +2342,7 @@ repository = "int128/kauthproxy"
 
 [[packages]]
 repository = "int128/kubectl-external-forward"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -2311,6 +2351,7 @@ name = "int128_kubelogin"
 
 [[packages]]
 repository = "int128/yamlpatch"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -2428,7 +2469,7 @@ repository = "jdx/usage"
 [[packages]]
 repository = "jedisct1/minisign"
 # BROKEN: ONE version has multiple architectures in one file in arch-specific folders?
-# deprecated = true
+deprecated = true
 
 [[packages]]
 repository = "jedisct1/piknik"
@@ -2876,6 +2917,7 @@ repository = "kubermatic/kubeone"
 
 [[packages]]
 repository = "kubernetes-retired/kubefed"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -2950,6 +2992,7 @@ repository = "kubevirt/kubevirt"
 
 [[packages]]
 repository = "kubewarden/kwctl"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -2969,6 +3012,7 @@ repository = "KusionStack/kusion"
 
 [[packages]]
 repository = "kvz/json2hcl"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -3138,6 +3182,7 @@ repository = "LucasPickering/slumber"
 
 [[packages]]
 repository = "LukeChannings/deno-arm64"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -3241,6 +3286,7 @@ repository = "matryer/moq"
 
 [[packages]]
 repository = "mattermost/mmctl"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -3387,6 +3433,7 @@ repository = "miniscruff/changie"
 
 [[packages]]
 repository = "minishift/minishift"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -3404,12 +3451,13 @@ repository = "mistakenelf/fm"
 
 [[packages]]
 repository = "mitchellh/golicense"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
 repository = "mitchellh/gon"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
-name = "mitchellh_gon"
 
 [[packages]]
 repository = "mitoma/sver"
@@ -3438,6 +3486,7 @@ repository = "moby/buildkit"
 
 [[packages]]
 repository = "momaek/authy"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -3680,6 +3729,7 @@ repository = "notaryproject/notation"
 
 [[packages]]
 repository = "nucleuscloud/neosync"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -3696,6 +3746,7 @@ repository = "nushell/nushell"
 
 [[packages]]
 repository = "nvarner/typst-lsp"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -3721,7 +3772,7 @@ repository = "ogham/dog"
 
 [[packages]]
 repository = "ogham/exa"
-# INACTIVE, use eza
+# INACTIVE: Not archived, but asking to use eza
 deprecated = true
 
 [[packages]]
@@ -3741,7 +3792,7 @@ repository = "oligot/go-mod-upgrade"
 
 [[packages]]
 repository = "ollama/ollama"
-# This is too big to upload
+# BROKEN: This is too big to upload
 deprecated = true
 
 [[packages]]
@@ -3773,10 +3824,12 @@ repository = "openai/codex"
 
 [[packages]]
 repository = "openclarity/kubeclarity"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
 repository = "openclarity/vmclarity"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -3827,6 +3880,7 @@ repository = "oppiliappan/dijo"
 
 [[packages]]
 repository = "optiv/Mangle"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -3967,6 +4021,7 @@ repository = "pfnet-research/git-ghost"
 
 [[packages]]
 repository = "pglet/pglet"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -3974,6 +4029,7 @@ repository = "pgrok/pgrok"
 
 [[packages]]
 repository = "Phantas0s/devdash"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -4035,6 +4091,7 @@ repository = "ponkio-o/ec2x"
 
 [[packages]]
 repository = "porter-dev/porter"
+# INACTIVE: Repo is 404
 deprecated = true
 
 [[packages]]
@@ -4042,6 +4099,7 @@ repository = "PowerShell/PowerShell"
 
 [[packages]]
 repository = "praetorian-inc/gokart"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -4141,6 +4199,7 @@ repository = "pulumi/pulumi"
 
 [[packages]]
 repository = "pulumi/tf2pulumi"
+# INACTIVE: Repo is 404
 deprecated = true
 
 [[packages]]
@@ -4194,6 +4253,7 @@ name = "rancher_cli"
 
 [[packages]]
 repository = "rancher/kim"
+# INACTIVE: Repo is 404
 deprecated = true
 
 [[packages]]
@@ -4216,8 +4276,8 @@ repository = "realm/SwiftLint"
 
 [[packages]]
 repository = "rebuy-de/aws-nuke"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
-name = "rebuy_de_aws-nuke"
 
 [[packages]]
 repository = "redpanda-data/connect"
@@ -4269,6 +4329,7 @@ repository = "rfjakob/gocryptfs"
 
 [[packages]]
 repository = "rgreinho/tfe-cli"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -4405,7 +4466,7 @@ repository = "sahilm/yamldiff"
 
 [[packages]]
 repository = "samuel-lucas6/Kryptor"
-# BROKEN: One build script fails
+# BROKEN: build script fails
 deprecated = true
 
 [[packages]]
@@ -4481,8 +4542,8 @@ repository = "segmentio/chamber"
 
 [[packages]]
 repository = "segmentio/golines"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
-name = "segmentio_golines"
 
 [[packages]]
 repository = "self-actuated/actuated-cli"
@@ -4557,6 +4618,7 @@ repository = "Shopify/ejson"
 
 [[packages]]
 repository = "Shopify/kubeaudit"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -4587,6 +4649,7 @@ repository = "siderolabs/talos"
 
 [[packages]]
 repository = "siderolabs/theila"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -4652,6 +4715,7 @@ repository = "skanehira/slack-reminder"
 
 [[packages]]
 repository = "skanehira/tson"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -4918,6 +4982,7 @@ repository = "superfly/flyctl"
 
 [[packages]]
 repository = "suzuki-shunsuke/akoi"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -4928,6 +4993,7 @@ repository = "suzuki-shunsuke/ci-info"
 
 [[packages]]
 repository = "suzuki-shunsuke/circleci-config-merge"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -4935,10 +5001,12 @@ repository = "suzuki-shunsuke/cmdx"
 
 [[packages]]
 repository = "suzuki-shunsuke/dd-time"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
 repository = "suzuki-shunsuke/deny-self-approve"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -4946,10 +5014,12 @@ repository = "suzuki-shunsuke/disable-checkout-persist-credentials"
 
 [[packages]]
 repository = "suzuki-shunsuke/discussion-slack-notifier"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
 repository = "suzuki-shunsuke/durl"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -4967,6 +5037,7 @@ name = "suzuki_shunsuke_ghcp"
 
 [[packages]]
 repository = "suzuki-shunsuke/ghd2i"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -4983,6 +5054,7 @@ repository = "suzuki-shunsuke/ghtkn"
 
 [[packages]]
 repository = "suzuki-shunsuke/git-rm-branch"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -4990,10 +5062,12 @@ repository = "suzuki-shunsuke/github-comment"
 
 [[packages]]
 repository = "suzuki-shunsuke/matchfile"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
 repository = "suzuki-shunsuke/migrate-urfave-cli-v3"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -5007,6 +5081,7 @@ repository = "suzuki-shunsuke/pinact"
 
 [[packages]]
 repository = "suzuki-shunsuke/renovate-issue-action"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -5032,8 +5107,8 @@ repository = "suzuki-shunsuke/tfrstate"
 
 [[packages]]
 repository = "suzuki-shunsuke/yaml2json"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
-name = "suzuki_shunsuke_yaml2json"
 
 [[packages]]
 repository = "suzuki-shunsuke/yodoc"
@@ -5150,6 +5225,7 @@ repository = "telepresenceio/telepresence"
 
 [[packages]]
 repository = "teler-sh/teler"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -5161,6 +5237,7 @@ name = "temporalio_cli"
 
 [[packages]]
 repository = "temporalio/tctl"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -5170,6 +5247,7 @@ deprecated = true
 
 [[packages]]
 repository = "tenable/terrascan"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -5195,14 +5273,15 @@ repository = "terratags/terratags"
 
 [[packages]]
 repository = "tfmigrator/cli"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
-name = "tfmigrator_cli"
 
 [[packages]]
 repository = "thanos-io/thanos"
 
 [[packages]]
 repository = "thazelart/terraform-validator"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -5213,6 +5292,7 @@ repository = "theseus-rs/postgresql-binaries"
 
 [[packages]]
 repository = "thestormforge/optimize-controller"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -5310,6 +5390,7 @@ repository = "truffleruby/truffleruby"
 
 [[packages]]
 repository = "trufflesecurity/driftwood"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -5439,6 +5520,7 @@ repository = "vladimirvivien/ktop"
 
 [[packages]]
 repository = "vmware-archive/octant"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -5473,6 +5555,7 @@ repository = "wasmCloud/wasmCloud"
 
 [[packages]]
 repository = "wasmerio/wapm-cli"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -5480,6 +5563,7 @@ repository = "wasmerio/wasmer"
 
 [[packages]]
 repository = "watchexec/cargo-watch"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
@@ -5563,10 +5647,12 @@ repository = "xo/usql"
 # WM specific!
 [[packages]]
 repository = "xremap/xremap"
+# BROKEN: Contains a lot of window environment specific packages, no idea what to do with them all
 deprecated = true
 
 [[packages]]
 repository = "xtaci/kcptun"
+# INACTIVE: Repo is in "public archive" state
 deprecated = true
 
 [[packages]]
