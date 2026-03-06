@@ -82,7 +82,7 @@ const COMPRESSED: &str = "\\.gz|\\.xz|\\.zstd?|\\.bz2";
 const VERSION: &str = "v?\\d+([\\.[^\\.]+])*";
 const VER: &str = "([\\._-]v\\d+([\\.[^\\.]+])*)?";
 
-const X86: &str = "(intel[_-]?32|i?[3-6]86|x86|32[_-]?bit)";
+const X86: &str = "(intel[_-]?32|i?[3-6]86|32[_-]?bit)";
 const X64: &str = "(intel[_-]?64|x86[_-]64|amd[_-]?64|x64|64[_-]?bit)";
 const ARM: &str = "(arm[_-]?64|aarch[_-]?64)";
 

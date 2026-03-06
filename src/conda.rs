@@ -22,7 +22,17 @@ pub async fn get_all_conda_packages(
         ..Default::default()
     };
 
-    let repo_data = Gateway::new()
+    let gateway = Gateway::builder()
+        .with_channel_config(rattler_repodata_gateway::ChannelConfig {
+            default: rattler_repodata_gateway::SourceConfig {
+                sharded_enabled: false,
+                ..Default::default()
+            },
+            ..Default::default()
+        })
+        .finish();
+
+    let repo_data = gateway
         .query(std::iter::once(channel), platforms, std::iter::once(spec))
         .await?;
 
