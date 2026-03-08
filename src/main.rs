@@ -92,15 +92,9 @@ fn main() -> Result<(), anyhow::Error> {
                         {
                             Ok(r) => r,
                             Err(e) => {
-                                return Ok(package_generation::PackageResult {
-                                    repository: repo_string,
-                                    name: package.name.clone(),
-                                    versions: vec![VersionPackagingStatus {
-                                        version: None,
-                                        status: package_generation::PackagingStatus::github_failed(
-                                            format!("{e}"),
-                                        ),
-                                    }],
+                                return Ok(package_generation::PackageResult::GithubFailed {
+                                    repository: package.repository.to_string(),
+                                    message: format!("{e}"),
                                 });
                             }
                         };
@@ -121,7 +115,7 @@ fn main() -> Result<(), anyhow::Error> {
                             work_dir,
                         )?;
 
-                        Ok::<_, anyhow::Error>(package_generation::PackageResult {
+                        Ok::<_, anyhow::Error>(package_generation::PackageResult::Ok {
                             repository: repo_string,
                             name: package.name.clone(),
                             versions,

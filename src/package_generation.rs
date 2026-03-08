@@ -16,7 +16,6 @@ use crate::config_file::Package;
 #[derive(PartialEq, Eq)]
 pub enum Status {
     Failed,
-    GithubFailed,
     Succeeded,
     Skipped,
 }
@@ -25,7 +24,6 @@ impl std::fmt::Display for Status {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let output = match self {
             Status::Failed => "❌",
-            Status::GithubFailed => "❌",
             Status::Succeeded => "✔ ",
             Status::Skipped => "❓",
         };
@@ -71,36 +69,46 @@ pub struct VersionPackagingStatus {
     pub status: Vec<PackagingStatus>,
 }
 
-pub struct PackageResult {
-    pub repository: String,
-    pub name: String,
-    pub versions: Vec<VersionPackagingStatus>,
+pub enum PackageResult {
+    GithubFailed {
+        repository: String,
+        message: String,
+    },
+    Ok {
+        repository: String,
+        name: String,
+        versions: Vec<VersionPackagingStatus>,
+    },
 }
 
 impl PackageResult {
     fn display_name(&self) -> String {
-        let repo_part = self
-            .repository
-            .rsplit('/')
-            .next()
-            .unwrap_or(&self.repository);
-        if self.name.eq_ignore_ascii_case(repo_part) {
-            self.repository.clone()
-        } else {
-            format!("{} ({})", self.repository, self.name)
+        match self {
+            PackageResult::GithubFailed { repository, .. } => repository.clone(),
+            PackageResult::Ok {
+                repository, name, ..
+            } => display_name(repository, name),
+        }
+    }
+
+    fn repository(&self) -> &str {
+        match self {
+            PackageResult::GithubFailed { repository, .. } => repository,
+            PackageResult::Ok { repository, .. } => repository,
         }
     }
 }
 
-impl PackagingStatus {
-    pub fn github_failed(error: String) -> Vec<Self> {
-        vec![Self {
-            platform: rattler_conda_types::Platform::Unknown,
-            status: Status::GithubFailed,
-            message: error,
-        }]
+fn display_name(repository: &str, name: &str) -> String {
+    let repo_part = repository.rsplit('/').next().unwrap_or(repository);
+    if name.eq_ignore_ascii_case(repo_part) {
+        repository.to_string()
+    } else {
+        format!("{} ({})", repository, name)
     }
+}
 
+impl PackagingStatus {
     pub fn recipe_generation_failed(platform: Platform) -> Self {
         Self {
             platform,
@@ -161,7 +169,7 @@ pub fn report_results(
         output.push_str(&format!(
             "Processed {}/{total_configured} repositories: {}\n\n",
             results.len(),
-            first.repository,
+            first.repository(),
         ));
     }
 
@@ -181,107 +189,108 @@ pub fn report_results(
         let pkg = &results[i];
         let display = pkg.display_name();
 
-        let gh_err = pkg
-            .versions
-            .iter()
-            .find(|v| v.status.iter().any(|s| s.status == Status::GithubFailed));
-        if let Some(v) = gh_err {
-            let msg = v
-                .status
-                .iter()
-                .find(|s| s.status == Status::GithubFailed)
-                .map(|s| s.message.as_str())
-                .unwrap_or("unknown error");
-            github_errors.push(format!("{display}: {msg}"));
-            continue;
-        }
-
-        let mut pkg_in_conda = vec![];
-        let mut pkg_generated = vec![];
-        let mut pkg_not_on_github: Vec<String> = vec![];
-
-        for v in &pkg.versions {
-            let ver = v.version.as_deref().unwrap_or("?");
-
-            let is_conda_only = v
-                .status
-                .iter()
-                .all(|s| s.message == "in conda, not on github");
-            if is_conda_only {
-                let mut platforms: Vec<String> =
-                    v.status.iter().map(|s| s.platform.to_string()).collect();
-                platforms.sort();
-                platforms.dedup();
-                pkg_not_on_github.push(format!("{ver} ({})", platforms.join(", ")));
-                continue;
+        match pkg {
+            PackageResult::GithubFailed {
+                repository,
+                message,
+            } => {
+                github_errors.push(format!("{repository}: {message}"));
             }
+            PackageResult::Ok {
+                repository: _,
+                name,
+                versions,
+            } => {
+                let mut pkg_in_conda = vec![];
+                let mut pkg_generated = vec![];
+                let mut pkg_not_on_github: Vec<String> = vec![];
 
-            let missing: Vec<String> = v
-                .status
-                .iter()
-                .filter(|s| s.status == Status::Skipped && s.message != "in conda, not on github")
-                .map(|s| s.platform.to_string())
-                .collect();
-            let failed: Vec<&PackagingStatus> = v
-                .status
-                .iter()
-                .filter(|s| s.status == Status::Failed)
-                .collect();
-            let has_generated = v
-                .status
-                .iter()
-                .any(|s| s.status == Status::Succeeded && s.message == "ok");
-            let has_in_conda = v
-                .status
-                .iter()
-                .any(|s| s.status == Status::Succeeded && s.message == "already in conda");
+                for v in versions {
+                    let ver = v.version.as_deref().unwrap_or("?");
 
-            if !failed.is_empty() {
-                let details: Vec<String> = failed
-                    .iter()
-                    .map(|s| {
-                        if s.platform == Platform::Unknown {
-                            s.message.clone()
+                    let is_conda_only = v
+                        .status
+                        .iter()
+                        .all(|s| s.message == "in conda, not on github");
+                    if is_conda_only {
+                        let mut platforms: Vec<String> =
+                            v.status.iter().map(|s| s.platform.to_string()).collect();
+                        platforms.sort();
+                        platforms.dedup();
+                        pkg_not_on_github.push(format!("{ver} ({})", platforms.join(", ")));
+                        continue;
+                    }
+
+                    let missing: Vec<String> = v
+                        .status
+                        .iter()
+                        .filter(|s| {
+                            s.status == Status::Skipped && s.message != "in conda, not on github"
+                        })
+                        .map(|s| s.platform.to_string())
+                        .collect();
+                    let failed: Vec<&PackagingStatus> = v
+                        .status
+                        .iter()
+                        .filter(|s| s.status == Status::Failed)
+                        .collect();
+                    let has_generated = v
+                        .status
+                        .iter()
+                        .any(|s| s.status == Status::Succeeded && s.message == "ok");
+                    let has_in_conda = v
+                        .status
+                        .iter()
+                        .any(|s| s.status == Status::Succeeded && s.message == "already in conda");
+
+                    if !failed.is_empty() {
+                        let details: Vec<String> = failed
+                            .iter()
+                            .map(|s| {
+                                if s.platform == Platform::Unknown {
+                                    s.message.clone()
+                                } else {
+                                    format!("{} ({})", s.message, s.platform)
+                                }
+                            })
+                            .collect();
+                        no_recipe
+                            .entry((display.clone(), details.join(", ")))
+                            .or_default()
+                            .push(ver.to_string());
+                    } else if !has_generated && !has_in_conda {
+                        no_recipe
+                            .entry((display.clone(), "no matching binary".to_string()))
+                            .or_default()
+                            .push(ver.to_string());
+                    } else {
+                        let missing_note = if missing.is_empty() {
+                            String::new()
                         } else {
-                            format!("{} ({})", s.message, s.platform)
-                        }
-                    })
-                    .collect();
-                no_recipe
-                    .entry((display.clone(), details.join(", ")))
-                    .or_default()
-                    .push(ver.to_string());
-            } else if !has_generated && !has_in_conda {
-                no_recipe
-                    .entry((display.clone(), "no matching binary".to_string()))
-                    .or_default()
-                    .push(ver.to_string());
-            } else {
-                let missing_note = if missing.is_empty() {
-                    String::new()
-                } else {
-                    format!(" (no: {})", missing.join(", "))
-                };
-                let formatted = format!("{ver}{missing_note}");
+                            format!(" (no: {})", missing.join(", "))
+                        };
+                        let formatted = format!("{ver}{missing_note}");
 
-                if has_generated {
-                    had_success.insert(pkg.name.clone());
-                    pkg_generated.push(formatted);
-                } else {
-                    had_success.insert(pkg.name.clone());
-                    pkg_in_conda.push(formatted);
+                        if has_generated {
+                            had_success.insert(name.clone());
+                            pkg_generated.push(formatted);
+                        } else {
+                            had_success.insert(name.clone());
+                            pkg_in_conda.push(formatted);
+                        }
+                    }
+                }
+
+                if !pkg_not_on_github.is_empty() {
+                    not_on_github.push((display.clone(), pkg_not_on_github));
+                }
+                if !pkg_in_conda.is_empty() {
+                    in_conda.push((display.clone(), pkg_in_conda));
+                }
+                if !pkg_generated.is_empty() {
+                    generated.push((display, pkg_generated));
                 }
             }
-        }
-
-        if !pkg_not_on_github.is_empty() {
-            not_on_github.push((display.clone(), pkg_not_on_github));
-        }
-        if !pkg_in_conda.is_empty() {
-            in_conda.push((display.clone(), pkg_in_conda));
-        }
-        if !pkg_generated.is_empty() {
-            generated.push((display, pkg_generated));
         }
     }
 
