@@ -17,12 +17,14 @@ fn report_status(
     total_configured: usize,
     unknown_in_conda: &[String],
     max_releases_to_import: usize,
+    platforms_count: usize,
 ) -> anyhow::Result<()> {
     let report = package_generation::report_results(
         result,
         total_configured,
         unknown_in_conda,
         max_releases_to_import,
+        platforms_count,
     );
     eprintln!("{report}");
 
@@ -45,6 +47,7 @@ fn main() -> Result<(), anyhow::Error> {
     let cli = cli::parse_cli();
 
     let config = config_file::parse_config(&cli.config_file)?;
+    let platform_count = config.all_platforms().len();
     let temporary_directory = cli.work_directory()?;
 
     package_generation::generate_build_script(temporary_directory.path())?;
@@ -147,6 +150,7 @@ fn main() -> Result<(), anyhow::Error> {
                 total_packages,
                 &unknown_in_conda,
                 config.conda.max_import_releases,
+                platform_count,
             )?;
 
             Ok(())

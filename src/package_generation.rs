@@ -273,6 +273,7 @@ pub fn report_results(
     total_configured: usize,
     unknown_in_conda: &[String],
     max_releases_to_import: usize,
+    platforms_count: usize,
 ) -> String {
     let mut output = String::new();
 
@@ -317,24 +318,34 @@ pub fn report_results(
     }
 
     if !report_data.no_binary_found.is_empty() {
-        output.push_str(&format!(
-            "No platform binary in release ({}):\n",
-            report_data.no_binary_found.len()
-        ));
-        for ((name, platform), versions) in &report_data.no_binary_found {
-            let marker = if versions.len() >= max_releases_to_import {
-                "  ***"
-            } else {
-                ""
-            };
+        let mut no_binary_report = String::new();
+        let mut last_name = String::new();
+        let mut last_versions = String::new();
+        let mut last_count = 0_usize;
 
+        for ((name, _), versions) in &report_data.no_binary_found {
+            if name != &last_name {
+                if last_count >= platforms_count && !last_name.is_empty() {
+                    no_binary_report.push_str(&format!("  {last_name}: {last_versions}\n",));
+                }
+                last_count = 0;
+                last_name = name.clone();
+                last_versions = versions.join(", ");
+            }
+            if versions.len() >= max_releases_to_import {
+                last_count += 1;
+            }
+        }
+        if last_count >= platforms_count && !last_name.is_empty() {
+            no_binary_report.push_str(&format!("  {last_name}: {last_versions}\n",));
+        }
+
+        if !no_binary_report.is_empty() {
             output.push_str(&format!(
-                "  {platform}/{name}: {}{}\n",
-                versions.join(", "),
-                marker
+                "No platform binary in release ({}):\n{no_binary_report}\n",
+                report_data.no_binary_found.len()
             ));
         }
-        output.push('\n');
     }
 
     if !report_data.not_on_github.is_empty() {
