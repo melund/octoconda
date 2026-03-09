@@ -297,7 +297,7 @@ pub fn report_results(
             report_data.github_errors.len()
         ));
         for (error, repos) in &report_data.github_errors {
-            output.push_str(&format!("  {}:\n    {}", error, repos.join(", ")));
+            output.push_str(&format!("  {}:\n    {}\n", error, repos.join(", ")));
         }
         output.push('\n');
     }
