@@ -117,6 +117,10 @@ repository = "alexellis/k3sup"
 [[packages]]
 repository = "alexellis/kubetrim"
 
+# Requested via discord
+[[packages]]
+repository = "AlexsJones/llmfit"
+
 [[packages]]
 repository = "AlexNabokikh/tfsort"
 
