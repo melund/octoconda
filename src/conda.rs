@@ -41,7 +41,23 @@ pub async fn get_all_conda_packages(
         result.extend(rd.iter().cloned());
     }
 
-    result.sort_by_key(|rdr| rdr.package_record.name.as_normalized().to_string());
+    result.sort();
 
     Ok(result)
+}
+
+/// Return the subslice of `repo_packages` whose normalized name equals
+/// `name`. Requires `repo_packages` to be sorted (name is the primary key).
+pub fn find_by_name<'a>(
+    repo_packages: &'a [RepoDataRecord],
+    name: &str,
+) -> &'a [RepoDataRecord] {
+    let start = repo_packages.partition_point(|r| {
+        r.package_record.name.as_normalized() < name
+    });
+    let end = start
+        + repo_packages[start..].partition_point(|r| {
+            r.package_record.name.as_normalized() == name
+        });
+    &repo_packages[start..end]
 }

@@ -399,6 +399,7 @@ pub fn generate_packaging_data(
     work_dir: &Path,
 ) -> anyhow::Result<Vec<VersionPackagingStatus>> {
     let mut result = vec![];
+    let pkg_records = crate::conda::find_by_name(repo_packages, &package.name);
 
     for (r, (version_string, build_number)) in releases {
         let Ok(version) = rattler_conda_types::Version::from_str(version_string) else {
@@ -413,9 +414,8 @@ pub fn generate_packaging_data(
 
         for (platform, pattern) in package.platform_pattern()? {
             if let Some(asset) = match_platform(&pattern, &r.assets) {
-                if repo_packages.iter().any(|r| {
+                if pkg_records.iter().any(|r| {
                     r.package_record.subdir == platform.to_string()
-                        && r.package_record.name.as_normalized() == package.name
                         && r.package_record.version == version
                 }) {
                     version_result.push(PackagingStatus::already_in_conda(platform));
@@ -453,10 +453,7 @@ pub fn generate_packaging_data(
         .collect();
 
     let mut conda_only: BTreeMap<String, Vec<PackagingStatus>> = BTreeMap::new();
-    for record in repo_packages {
-        if record.package_record.name.as_normalized() != package.name {
-            continue;
-        }
+    for record in pkg_records {
         if github_versions.contains(&record.package_record.version) {
             continue;
         }

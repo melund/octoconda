@@ -139,7 +139,6 @@ fn main() -> Result<(), anyhow::Error> {
                 .map(|r| r.package_record.name.as_normalized().to_string())
                 .filter(|name| !configured_names.contains(name.as_str()))
                 .collect();
-            unknown_in_conda.sort();
             unknown_in_conda.dedup();
 
             report_status(
