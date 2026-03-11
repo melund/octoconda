@@ -293,10 +293,8 @@ pub fn report_results(
 
     // Build report sections
     if !report_data.github_errors.is_empty() {
-        output.push_str(&format!(
-            "GitHub errors ({}):\n",
-            report_data.github_errors.len()
-        ));
+        let pkg_count: usize = report_data.github_errors.values().map(Vec::len).sum();
+        output.push_str(&format!("GitHub errors ({pkg_count} packages):\n",));
         for (error, repos) in &report_data.github_errors {
             output.push_str(&format!("  {}:\n    {}\n", error, repos.join(", ")));
         }
@@ -304,9 +302,15 @@ pub fn report_results(
     }
     // Build report sections
     if !report_data.no_recipe.is_empty() {
+        let packages: std::collections::HashSet<&str> = report_data
+            .no_recipe
+            .iter()
+            .map(|e| e.package.as_str())
+            .collect();
         output.push_str(&format!(
-            "Recipe generation failures ({}):\n",
-            report_data.no_recipe.len()
+            "Recipe generation failures ({} files, {} packages):\n",
+            report_data.no_recipe.len(),
+            packages.len(),
         ));
         for error in &report_data.no_recipe {
             output.push_str(&format!(
@@ -341,17 +345,24 @@ pub fn report_results(
         }
 
         if !no_binary_report.is_empty() {
+            let packages: std::collections::HashSet<&str> = report_data
+                .no_binary_found
+                .keys()
+                .map(|(d, _)| d.as_str())
+                .collect();
             output.push_str(&format!(
-                "No platform binary in release ({}):\n{no_binary_report}\n",
-                report_data.no_binary_found.len()
+                "No platform binary in release \
+                 ({} files, {} packages):\n{no_binary_report}\n",
+                report_data.no_binary_found.len(),
+                packages.len(),
             ));
         }
     }
 
     if !report_data.not_on_github.is_empty() {
         output.push_str(&format!(
-            "Package versions in conda, not on GitHub ({}):\n",
-            report_data.not_on_github.len()
+            "Package versions in conda, not on GitHub ({} packages):\n",
+            report_data.not_on_github.len(),
         ));
         for (name, versions) in &report_data.not_on_github {
             output.push_str(&format!("  {name}: {}\n", versions.join(", ")));
@@ -371,9 +382,15 @@ pub fn report_results(
     }
 
     if !report_data.recipe_generated.is_empty() {
+        let packages: std::collections::HashSet<&str> = report_data
+            .recipe_generated
+            .keys()
+            .map(|(d, _)| d.as_str())
+            .collect();
         output.push_str(&format!(
-            "OK (generated recipe) ({}):\n",
-            report_data.recipe_generated.len()
+            "OK (generated recipe) ({} files, {} packages):\n",
+            report_data.recipe_generated.len(),
+            packages.len(),
         ));
         for ((name, platform), versions) in &report_data.recipe_generated {
             output.push_str(&format!("  {name}/{platform}: {}\n", versions.join(", ")));
