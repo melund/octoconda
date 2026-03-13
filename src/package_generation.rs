@@ -350,10 +350,11 @@ pub fn report_results(
                 .keys()
                 .map(|(d, _)| d.as_str())
                 .collect();
+            let file_count: usize =
+                report_data.no_binary_found.values().map(Vec::len).sum();
             output.push_str(&format!(
                 "No platform binary in release \
-                 ({} files, {} packages):\n{no_binary_report}\n",
-                report_data.no_binary_found.len(),
+                 ({file_count} files, {} packages):\n{no_binary_report}\n",
                 packages.len(),
             ));
         }
@@ -387,9 +388,10 @@ pub fn report_results(
             .keys()
             .map(|(d, _)| d.as_str())
             .collect();
+        let file_count: usize =
+            report_data.recipe_generated.values().map(Vec::len).sum();
         output.push_str(&format!(
-            "OK (generated recipe) ({} files, {} packages):\n",
-            report_data.recipe_generated.len(),
+            "OK (generated recipe) ({file_count} files, {} packages):\n",
             packages.len(),
         ));
         for ((name, platform), versions) in &report_data.recipe_generated {
