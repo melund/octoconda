@@ -1518,6 +1518,9 @@ repository = "erebe/wstunnel"
 repository = "ericchiang/pup"
 
 [[packages]]
+repository = "erickochen/purple"
+
+[[packages]]
 repository = "ernoaapa/kubectl-warp"
 
 [[packages]]
