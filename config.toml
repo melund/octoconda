@@ -4773,6 +4773,7 @@ repository = "smtg-ai/claude-squad"
 [[packages]]
 repository = "snyk/cli"
 name = "snyk_cli"
+platforms = { win-64 = "^snyk-win.exe$" }
 
 [[packages]]
 repository = "snyk/driftctl"
