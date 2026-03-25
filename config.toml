@@ -518,6 +518,9 @@ repository = "becheran/mlc"
 repository = "becheran/roumon"
 
 [[packages]]
+repository = "bellicose100xp/jiq"
+
+[[packages]]
 repository = "benbjohnson/litestream"
 
 [[packages]]
@@ -544,6 +547,9 @@ repository = "bflad/tfproviderdocs"
 
 [[packages]]
 repository = "bflad/tfproviderlint"
+
+[[packages]]
+repository = "Bilal-AKAG/autogitignore"
 
 [[packages]]
 repository = "binwiederhier/ntfy"
@@ -592,6 +598,12 @@ repository = "bloznelis/typioca"
 repository = "blst-security/cherrybomb"
 
 [[packages]]
+repository = "bnomei/nereid"
+
+[[packages]]
+repository = "bnomei/raymon"
+
+[[packages]]
 repository = "bmf-san/ggc"
 
 [[packages]]
@@ -630,6 +642,9 @@ repository = "br0xen/boltbrowser"
 repository = "breml/tfreveal"
 
 [[packages]]
+repository = "brevity1swos/rgx"
+
+[[packages]]
 repository = "bridgecrewio/checkov"
 
 [[packages]]
@@ -665,6 +680,8 @@ name = "buildkite_agent"
 repository = "buildkite/cli"
 name = "buildkite_cli"
 
+[[packages]]
+repository = "buildoak/tortuise"
 
 [[packages]]
 repository = "buildpacks/pack"
@@ -1027,6 +1044,9 @@ repository = "coder/coder"
 repository = "coder3101/protols"
 
 [[packages]]
+repository = "coignard/lottie"
+
+[[packages]]
 repository = "codesenberg/bombardier"
 
 [[packages]]
@@ -1293,6 +1313,9 @@ repository = "derailed/popeye"
 
 [[packages]]
 repository = "deref/exo"
+
+[[packages]]
+repository = "derekwisong/datui"
 
 [[packages]]
 repository = "deviceinsight/kafkactl"
@@ -2268,6 +2291,12 @@ repository = "howardjohn/kubeconfig-proxy"
 repository = "hrmsk66/terraformify"
 
 [[packages]]
+repository = "huseyinbabal/taws"
+
+[[packages]]
+repository = "huseyinbabal/tredis"
+
+[[packages]]
 repository = "hytromo/mimosa"
 
 [[packages]]
@@ -2459,6 +2488,9 @@ repository = "jamietsao/random-winner"
 
 [[packages]]
 repository = "JanDeDobbeleer/oh-my-posh"
+
+[[packages]]
+repository = "JayanAXHF/gitv"
 
 [[packages]]
 repository = "jbangdev/jbang"
@@ -3056,6 +3088,9 @@ repository = "laktak/zfind"
 repository = "Lallassu/gorss"
 
 [[packages]]
+repository = "lance0/xfr"
+
+[[packages]]
 repository = "lasantosr/intelli-shell"
 
 [[packages]]
@@ -3353,7 +3388,6 @@ repository = "Melkeydev/go-blueprint"
 repository = "mercari/hcledit"
 name = "mercari_hcledit"
 
-
 [[packages]]
 repository = "mercari/tfnotify"
 
@@ -3377,6 +3411,9 @@ repository = "mgdm/htmlq"
 
 [[packages]]
 repository = "mgechev/revive"
+
+[[packages]]
+repository = "mgood/tuisage"
 
 [[packages]]
 repository = "mgunyho/tere"
@@ -4357,6 +4394,12 @@ repository = "rhysd/hgrep"
 repository = "rhysd/vim-startuptime"
 
 [[packages]]
+repository = "ricardodantas/hazelnut"
+
+[[packages]]
+repository = "ricardodantas/perch"
+
+[[packages]]
 repository = "Rigellute/spotify-tui"
 
 [[packages]]
@@ -4370,6 +4413,9 @@ repository = "robinovitch61/kl"
 
 [[packages]]
 repository = "robscott/kube-capacity"
+
+[[packages]]
+repository = "Rodrigodd/strace-tui"
 
 [[packages]]
 repository = "rogerwelin/cassowary"
@@ -4559,6 +4605,9 @@ repository = "self-actuated/actuated-cli"
 
 [[packages]]
 repository = "sethvargo/ratchet"
+
+[[packages]]
+repository = "shanselman/winget-tui"
 
 [[packages]]
 repository = "sharkdp/bat"
@@ -4903,6 +4952,9 @@ repository = "square/certigo"
 
 [[packages]]
 repository = "squat/kilo"
+
+[[packages]]
+repository = "Squirreljetpack/matchmaker"
 
 [[packages]]
 repository = "srevinsaju/togomak"
@@ -5261,6 +5313,9 @@ repository = "tenable/terrascan"
 deprecated = true
 
 [[packages]]
+repository = "terminaltrove/moltbook-tui"
+
+[[packages]]
 repository = "termkit/gama"
 
 [[packages]]
@@ -5447,6 +5502,9 @@ repository = "typst/typst"
 
 [[packages]]
 repository = "typstyle-rs/typstyle"
+
+[[packages]]
+repository = "TysonLabs/lazyide"
 
 [[packages]]
 repository = "ubicloud/cli"
@@ -5690,6 +5748,9 @@ repository = "yarnpkg/yarn"
 
 [[packages]]
 repository = "yashikota/genenv"
+
+[[packages]]
+repository = "yashksaini-coder/oracle"
 
 [[packages]]
 repository = "yassinebenaid/bunster"
